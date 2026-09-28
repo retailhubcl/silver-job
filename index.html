@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Silver Job: la experiencia no se jubila</title>
+<meta name="description" content="Gerentes senior que ya hicieron crecer empresas, ahora por horas para pymes que quieren llegar más lejos.">
+<meta property="og:title" content="Silver Job: la experiencia no se jubila">
+<meta property="og:description" content="Gerentes senior por horas para pymes que quieren llegar más lejos.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316202A'/%3E%3Cg transform='rotate%28-90 16 16%29' fill='none' stroke-width='5'%3E%3Ccircle cx='16' cy='16' r='10' stroke='%23A3324F' stroke-dasharray='17.6 45.2'/%3E%3Ccircle cx='16' cy='16' r='10' stroke='%23D9A33A' stroke-dasharray='17.6 45.2' stroke-dashoffset='-20.94'/%3E%3Ccircle cx='16' cy='16' r='10' stroke='%233D6FD1' stroke-dasharray='17.6 45.2' stroke-dashoffset='-41.89'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23EDEFF1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Source+Sans+3:wght@400..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plata: #EDEFF1;
+    --plata-2: #E1E5E9;
+    --panel: #F8F9FA;
+    --linea: #C3CAD1;
+    --grafito: #1E2A36;
+    --grafito-2: #4A5866;
+    --noche: #16202A;
+    --tinta: #3D6FD1;
+    --tinta-profunda: #1C3566;
+    --vino: #A3324F;
+    --trigo: #D9A33A;
+    --ancho: 1180px;
+    --fuente: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+    --fuente-titulos: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--plata); color: var(--grafito);
+    font-family: var(--fuente); font-size: 1.125rem; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizing: auto; }
+  :focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 4px; }
+  .contenedor { width: min(100% - 2.5rem, var(--ancho)); margin-inline: auto; }
+
+  /* Logo */
+  .marca { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; }
+  .marca .anillo { width: 34px; height: 34px; }
+  .marca .palabra { font-weight: 700; font-size: 1.45rem; letter-spacing: -.03em; line-height: 1; }
+
+  /* Botones */
+  .boton {
+    display: inline-block; font: inherit; font-size: 1rem; font-weight: 650;
+    padding: .85rem 1.4rem; border-radius: 999px; text-decoration: none; cursor: pointer;
+    border: 2px solid var(--grafito); background: var(--grafito); color: var(--plata);
+  }
+  .boton:hover { background: #2C3B4A; border-color: #2C3B4A; }
+  .boton.plata { background: var(--plata); border-color: var(--plata); color: var(--noche); }
+  .boton.plata:hover { background: #fff; border-color: #fff; }
+  .boton.contorno { background: transparent; border-color: rgba(237,239,241,.55); color: var(--plata); }
+  .boton.contorno:hover { border-color: var(--plata); background: rgba(237,239,241,.08); }
+
+  /* Zona oscura: encabezado + hero */
+  .oscuro { background: var(--noche); color: var(--plata); position: relative; overflow: hidden; }
+  .oscuro .fondo-anillo { position: absolute; width: 900px; height: 900px; right: -260px; top: -220px; opacity: .09; pointer-events: none; color: var(--plata); }
+  .encabezado { position: relative; padding: 1.4rem 0; }
+  .encabezado .contenedor { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .nav { display: flex; align-items: center; gap: 1.75rem; font-size: 1rem; }
+  .nav a:not(.boton) { text-decoration: none; color: #B9C3CD; }
+  .nav a:not(.boton):hover { color: #fff; }
+
+  .hero { position: relative; padding: 3.5rem 0 6rem; }
+  .hero .contenedor { display: grid; grid-template-columns: 1.15fr .85fr; gap: 4rem; align-items: center; }
+  .hero h1 {
+    font-size: clamp(3rem, 6.4vw, 5.9rem); font-weight: 600;
+    line-height: 1.02; letter-spacing: -.02em; margin: 0 0 1.75rem; color: #FFFFFF;
+  }
+  .hero p.bajada { font-size: clamp(1.2rem, 1.7vw, 1.4rem); line-height: 1.45; color: #C9D1D9; max-width: 34ch; margin: 0 0 2.25rem; }
+  .hero p.bajada strong { color: #fff; font-weight: 600; }
+  .acciones { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+  /* El mes de Patricia */
+  .mes { background: var(--panel); color: var(--grafito); border-radius: 20px; padding: 1.75rem; box-shadow: 0 40px 80px -30px rgba(0,0,0,.65); margin: 0; }
+  .mes h2 { font-size: 1.1rem; font-weight: 650; margin: 0 0 .2rem; line-height: 1.3; }
+  .mes .nota { font-size: .95rem; color: var(--grafito-2); margin: 0 0 1.25rem; }
+  .grilla { display: grid; grid-template-columns: 3.4rem repeat(5, 1fr); gap: 6px; align-items: center; }
+  .grilla .dia, .grilla .semana { font-size: .85rem; color: var(--grafito-2); }
+  .grilla .dia { text-align: center; padding-bottom: .15rem; }
+  .celda { aspect-ratio: 1.35 / 1; border-radius: 8px; }
+  .celda.libre { border: 1.5px dashed var(--linea); }
+  .celda.vina { background: var(--vino); }
+  .celda.pan { background: var(--trigo); }
+  .celda.trans { background: var(--tinta); }
+  .celda.entra { animation: entrar .45s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes entrar { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: none; } }
+  .leyenda { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: .8rem; }
+  .leyenda li { display: grid; grid-template-columns: 14px 1fr auto; gap: .8rem; align-items: baseline; font-size: 1rem; }
+  .leyenda .muestra { width: 14px; height: 14px; border-radius: 50%; transform: translateY(2px); }
+  .leyenda strong { font-weight: 650; }
+  .leyenda span.foco { display: block; color: var(--grafito-2); font-size: .92rem; }
+  .leyenda .horas { font-variant-numeric: tabular-nums; font-weight: 650; white-space: nowrap; }
+  .total { display: flex; justify-content: space-between; border-top: 1px solid var(--linea); margin-top: 1.1rem; padding-top: .9rem; font-size: 1rem; }
+
+  /* Puente: la frase que junta los dos lados */
+  .puente { background: var(--tinta-profunda); color: #fff; padding: 6.5rem 0 7rem; position: relative; overflow: hidden; }
+  .puente .lados-frase { display: grid; grid-template-columns: 1fr auto 1fr; gap: 3rem; align-items: center; }
+  .puente .frase { font-size: clamp(1.5rem, 2.6vw, 2.15rem); line-height: 1.2; letter-spacing: -.015em; font-weight: 500; margin: 0; color: #D5DEEE; }
+  .puente .frase.izq { text-align: right; }
+  .puente .frase b { color: #fff; font-weight: 750; }
+  .puente .union { width: clamp(84px, 9vw, 120px); height: clamp(84px, 9vw, 120px); color: #fff; }
+  .puente .union .anillo { width: 100%; height: 100%; }
+  .puente .cierre {
+    margin: 4.5rem 0 0; text-align: center; color: #FFFFFF;
+    font-size: clamp(2.6rem, 6.6vw, 5.8rem); font-weight: 600; line-height: 1.04; letter-spacing: -.02em;
+  }
+  .puente .cierre, .hero h1 { text-wrap: balance; }
+  .puente .anillo-enorme { position: absolute; width: 700px; height: 700px; left: -240px; bottom: -330px; opacity: .08; color: #fff; pointer-events: none; }
+
+
+  /* Foto de portada */
+  .foto-hero { position: relative; margin: 0; }
+  .foto-hero img { display: block; width: 100%; height: auto; aspect-ratio: 900 / 1117; object-fit: cover; border-radius: 24px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.7); }
+  .foto-hero figcaption {
+    position: absolute; left: -2.25rem; bottom: 2.25rem; max-width: 19rem;
+    display: flex; gap: .8rem; align-items: center;
+    background: var(--panel); color: var(--grafito); border-radius: 18px; padding: .9rem 1.1rem;
+    font-size: .95rem; line-height: 1.35; box-shadow: 0 24px 50px -20px rgba(0,0,0,.55);
+  }
+  .foto-hero figcaption .anillo { width: 36px; height: 36px; flex: none; color: var(--grafito); }
+
+  /* Un mes de Patricia */
+  .patricia { padding: 6.5rem 0; }
+  .patricia-intro { max-width: 40rem; margin-bottom: 3rem; }
+  .patricia-intro h2 { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 600; letter-spacing: -.015em; line-height: 1.08; margin: 0 0 1rem; text-wrap: balance; }
+  .patricia-intro p { color: var(--grafito-2); margin: 0; max-width: 46ch; }
+  .patricia-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 2.5rem; align-items: start; }
+  .patricia .mes { box-shadow: none; border: 1px solid var(--linea); }
+  .fotos { display: grid; gap: 1.5rem; }
+  .foto-caso { position: relative; margin: 0; }
+  .foto-caso img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 18px; }
+  .foto-caso figcaption {
+    position: absolute; left: 1rem; bottom: 1rem; display: flex; align-items: center; gap: .55rem;
+    background: rgba(248,249,250,.95); border-radius: 999px; padding: .5rem 1rem; font-size: .92rem;
+  }
+  .foto-caso figcaption .punto { width: 10px; height: 10px; border-radius: 50%; }
+  .foto-caso figcaption span:last-child { color: var(--grafito-2); }
+
+  /* Foto de ejecutivo */
+  .foto-ejecutivo { display: block; width: 100%; max-width: 32rem; height: auto; aspect-ratio: 1100 / 738; object-fit: cover; border-radius: 18px; margin-bottom: 2.25rem; }
+
+  /* Secciones pymes y ejecutivos */
+  .seccion-pymes, .seccion-ejecutivos { padding: 6.5rem 0; scroll-margin-top: 0; }
+  .seccion-pymes { background: var(--panel); }
+  .seccion-ejecutivos { background: var(--noche); color: var(--plata); }
+  .beneficios-grid { display: grid; grid-template-columns: .95fr 1.05fr; gap: 4.5rem; align-items: start; }
+  .etiqueta-seccion { display: inline-flex; align-items: center; gap: .5rem; font-size: 1rem; font-weight: 600; margin: 0 0 1rem; color: var(--tinta); }
+  .etiqueta-seccion::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  .seccion-ejecutivos .etiqueta-seccion { color: #8FB0F0; }
+  .beneficios-intro h2 { font-size: clamp(2rem, 3.4vw, 2.8rem); font-weight: 600; letter-spacing: -.015em; line-height: 1.1; margin: 0 0 1.1rem; max-width: 18ch; text-wrap: balance; }
+  .beneficios-intro p { max-width: 42ch; margin: 0 0 1.5rem; }
+  .seccion-pymes .beneficios-intro p { color: var(--grafito-2); }
+  .seccion-ejecutivos .beneficios-intro p:not(.etiqueta-seccion) { color: #C9D1D9; }
+  .roles { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 2rem; padding: 0; list-style: none; }
+  .roles li { border: 1.5px solid var(--linea); border-radius: 999px; padding: .35rem .9rem; font-size: .95rem; }
+  .beneficios { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 2.25rem; }
+  .beneficios li { border-top: 1px solid var(--linea); padding-top: 1.25rem; }
+  .seccion-ejecutivos .beneficios li { border-top-color: rgba(237,239,241,.2); }
+  .beneficios li::before { content: ""; display: block; width: 28px; height: 4px; border-radius: 2px; margin-bottom: 1rem; background: var(--vino); }
+  .beneficios li:nth-child(2)::before { background: var(--trigo); }
+  .beneficios li:nth-child(3)::before { background: var(--tinta); }
+  .beneficios li:nth-child(4)::before { background: var(--grafito-2); }
+  .seccion-ejecutivos .beneficios li:nth-child(4)::before { background: var(--plata); }
+  .beneficios h3 { font-size: 1.3rem; font-weight: 600; line-height: 1.25; margin: 0 0 .5rem; }
+  .beneficios p { margin: 0; }
+  .seccion-pymes .beneficios p { color: var(--grafito-2); }
+  .seccion-ejecutivos .beneficios p { color: #C9D1D9; }
+
+  .como-funciona { margin-top: 5rem; }
+  .como-funciona > h3 { font-size: clamp(1.6rem, 2.4vw, 2rem); font-weight: 600; letter-spacing: -.01em; margin: 0 0 2rem; }
+  .pasos { list-style: none; counter-reset: paso; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+  .pasos li { counter-increment: paso; border-top: 2px solid var(--grafito); padding-top: 1.1rem; }
+  .seccion-ejecutivos .pasos li { border-top-color: var(--plata); }
+  .pasos li::before { content: counter(paso); display: block; font-family: var(--fuente-titulos); font-size: 2.6rem; font-weight: 600; line-height: 1; margin-bottom: .8rem; color: var(--tinta); }
+  .seccion-ejecutivos .pasos li::before { color: #8FB0F0; }
+  .pasos h4 { font-family: var(--fuente); font-size: 1.2rem; font-weight: 700; margin: 0 0 .4rem; }
+  .pasos p { margin: 0; color: var(--grafito-2); max-width: 32ch; }
+  .seccion-ejecutivos .pasos p { color: #C9D1D9; }
+
+  /* Formulario */
+  .formulario-seccion { padding: 6rem 0; }
+  .formulario-seccion .contenedor { display: grid; grid-template-columns: .8fr 1fr; gap: 4rem; align-items: start; }
+  .formulario-seccion .intro h2 { margin-bottom: 1rem; }
+  .formulario-seccion .intro p { color: var(--grafito-2); max-width: 34ch; margin: 0; }
+  .tarjeta-form { background: var(--panel); border: 1px solid var(--linea); border-radius: 20px; padding: 2rem; }
+  .selector { display: inline-flex; background: var(--plata-2); border-radius: 999px; padding: 4px; margin-bottom: 1.75rem; }
+  .selector button { font: inherit; font-size: 1rem; font-weight: 600; border: 0; background: transparent; color: var(--grafito-2); padding: .6rem 1.2rem; border-radius: 999px; cursor: pointer; }
+  .selector button[aria-selected="true"] { background: var(--grafito); color: var(--plata); }
+  .campos { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.25rem; }
+  .campo { display: flex; flex-direction: column; gap: .35rem; }
+  .campo.ancho { grid-column: 1 / -1; }
+  .campo label { font-size: .95rem; font-weight: 600; }
+  .campo input, .campo select { font: inherit; font-size: 1rem; color: var(--grafito); background: #fff; border: 1.5px solid var(--linea); border-radius: 10px; padding: .7rem .8rem; width: 100%; }
+  .campo input:focus, .campo select:focus { border-color: var(--tinta); outline: none; box-shadow: 0 0 0 3px rgba(61,111,209,.22); }
+  .campo input:user-invalid { border-color: var(--vino); }
+  .form-pie { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .form-pie small { color: var(--grafito-2); font-size: .9rem; }
+  .confirmacion { display: none; }
+  .confirmacion h3 { font-size: 1.5rem; margin: 0 0 .5rem; }
+  .confirmacion p { margin: 0; color: var(--grafito-2); }
+  [hidden] { display: none !important; }
+
+  .pie { border-top: 1px solid var(--linea); padding: 2rem 0 2.5rem; font-size: .95rem; color: var(--grafito-2); }
+  .pie .contenedor { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .pie .marca .anillo { width: 26px; height: 26px; }
+  .pie .marca .palabra { font-size: 1.15rem; color: var(--grafito); }
+
+  @media (max-width: 900px) {
+    .hero .contenedor, .formulario-seccion .contenedor { grid-template-columns: 1fr; gap: 3rem; }
+    .puente .lados-frase { grid-template-columns: 1fr; gap: 2rem; justify-items: center; text-align: center; }
+    .puente .frase.izq { text-align: center; }
+    .pasos { grid-template-columns: 1fr; gap: 2rem; }
+    .beneficios-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .patricia-grid { grid-template-columns: 1fr; }
+    .foto-hero { max-width: 30rem; }
+    .foto-hero figcaption { left: 1rem; bottom: 1rem; right: 1rem; }
+    .nav a:not(.boton) { display: none; }
+  }
+  @media (max-width: 520px) {
+    .campos { grid-template-columns: 1fr; }
+    .beneficios { grid-template-columns: 1fr; gap: 2rem; }
+    .seccion-pymes, .seccion-ejecutivos { padding: 4.5rem 0; }
+    .mes { padding: 1.25rem; }
+    .grilla { grid-template-columns: 2.6rem repeat(5, 1fr); gap: 4px; }
+    .tarjeta-form { padding: 1.4rem; }
+    .foto-caso figcaption { left: .6rem; bottom: .6rem; font-size: .85rem; padding: .4rem .8rem; }
+    .nav .boton { padding: .65rem 1rem; font-size: .95rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .celda.entra { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="oscuro">
+  <div class="fondo-anillo"><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg></div>
+  <header class="encabezado">
+    <div class="contenedor">
+      <a class="marca" href="#" aria-label="Silver Job, inicio"><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg><span class="palabra">silverjob</span></a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#pymes">Para pymes</a>
+        <a href="#ejecutivos">Para ejecutivos</a>
+        <a class="boton plata" href="#lista">Súmate a la lista</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="contenedor">
+      <div>
+        <h1>La experiencia<br>no se jubila.</h1>
+        <p class="bajada">Gerentes que ya hicieron crecer empresas, ahora por horas para pymes que quieren llegar más lejos. <strong>Tu empresa gana décadas de experiencia. Ellos vuelven a hacer lo que mejor saben.</strong></p>
+        <div class="acciones">
+          <a class="boton plata" href="#lista" data-tipo="pyme">Busco un gerente</a>
+          <a class="boton contorno" href="#lista" data-tipo="ejecutivo">Soy ejecutivo</a>
+        </div>
+      </div>
+
+      <figure class="foto-hero">
+        <img src="img/patricia-vina.jpg" width="900" height="1117" fetchpriority="high" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar">
+        <figcaption><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+</div>
+
+<main>
+  <section class="puente" aria-label="Por qué existe Silver Job">
+    <div class="anillo-enorme"><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg></div>
+    <div class="contenedor">
+      <div class="lados-frase">
+        <p class="frase izq">Hay <b>pymes</b> que crecieron más rápido que su equipo de gestión.</p>
+        <div class="union"><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg></div>
+        <p class="frase">Y <b>ejecutivos</b> con décadas de experiencia a los que el mercado dejó de llamar.</p>
+      </div>
+      <p class="cierre">Silver Job junta a los dos.</p>
+    </div>
+  </section>
+
+
+  <section class="patricia" aria-labelledby="patricia-titulo">
+    <div class="contenedor">
+      <div class="patricia-intro">
+        <h2 id="patricia-titulo">Tres pymes, una misma gerenta</h2>
+        <p>Patricia fue gerenta de operaciones durante décadas. Hoy reparte su experiencia entre tres empresas que nunca habrían podido contratarla a tiempo completo.</p>
+      </div>
+      <div class="patricia-grid">
+        <figure class="mes" aria-labelledby="mes-titulo">
+        <h2 id="mes-titulo">El calendario de Patricia</h2>
+        <p class="nota">Caso ilustrativo. Cada bloque es una mañana de trabajo de 4 horas.</p>
+        <div class="grilla" id="grilla" role="img" aria-label="Calendario de cuatro semanas: 6 mañanas para una viña, 5 para una panadería, 4 para una empresa de transportes y 5 libres."></div>
+        <ul class="leyenda">
+          <li><span class="muestra" style="background:var(--vino)"></span><div><strong>Viña familiar</strong><span class="foco">Ordenar la operación de exportación</span></div><span class="horas">24 h</span></li>
+          <li><span class="muestra" style="background:var(--trigo)"></span><div><strong>Panadería con tres locales</strong><span class="foco">Control de costos y turnos</span></div><span class="horas">20 h</span></li>
+          <li><span class="muestra" style="background:var(--tinta)"></span><div><strong>Empresa de transportes</strong><span class="foco">Rutas y gestión de flota</span></div><span class="horas">16 h</span></li>
+        </ul>
+        <div class="total"><span>Tres pymes, una misma gerenta</span><strong>60 h al mes</strong></div>
+      </figure>
+        <div class="fotos">
+          <figure class="foto-caso">
+            <img src="img/patricia-panaderia.jpg" width="1100" height="738" loading="lazy" alt="Patricia revisa costos en una tablet junto al dueño de una panadería de barrio">
+            <figcaption><span class="punto" style="background:var(--trigo)"></span><strong>Panadería con tres locales</strong><span>20 h al mes</span></figcaption>
+          </figure>
+          <figure class="foto-caso">
+            <img src="img/patricia-transportes.jpg" width="1100" height="738" loading="lazy" alt="Patricia muestra una ruta en una tablet a la jefa de operaciones de una empresa de transportes">
+            <figcaption><span class="punto" style="background:var(--tinta)"></span><strong>Empresa de transportes</strong><span>16 h al mes</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion-pymes" id="pymes" aria-labelledby="pymes-titulo">
+    <div class="contenedor">
+      <div class="beneficios-grid">
+        <div class="beneficios-intro">
+          <p class="etiqueta-seccion">Para pymes</p>
+          <h2 id="pymes-titulo">Gestión senior sin un sueldo de gerente a tiempo completo</h2>
+          <p>La mayoría de las pymes no necesita un gerente cuarenta horas a la semana. Necesita a alguien que ya resolvió estos problemas y que dedique a tu empresa el tiempo justo.</p>
+          <ul class="roles" aria-label="Áreas disponibles"><li>Gerencia general</li><li>Operaciones</li><li>Marketing</li><li>Finanzas</li><li>Comercial</li></ul>
+          <a class="boton" href="#lista" data-tipo="pyme">Busco un gerente</a>
+        </div>
+        <ul class="beneficios">
+          <li><h3>Experiencia que antes no estaba a tu alcance</h3><p>Gerentes con décadas de trayectoria, del mismo nivel que contratan las grandes empresas.</p></li>
+          <li><h3>Horas, no sueldos</h3><p>Defines cuántas horas al mes necesitas y por cuánto tiempo. Si la necesidad cambia, ajustas.</p></li>
+          <li><h3>Directo a lo importante</h3><p>Alguien que ya enfrentó estos problemas no necesita meses para entender tu negocio.</p></li>
+          <li><h3>Perfiles validados</h3><p>Revisamos la trayectoria de cada ejecutivo antes de presentártelo.</p></li>
+        </ul>
+      </div>
+      <div class="como-funciona">
+        <h3>Cómo funciona para tu pyme</h3>
+        <ol class="pasos">
+          <li><h4>Cuéntanos qué necesitas</h4><p>Qué área quieres ordenar, cuántas horas al mes y por cuánto tiempo.</p></li>
+          <li><h4>Revisa perfiles validados</h4><p>Te presentamos ejecutivos con trayectoria real en esa área, listos para trabajar por horas.</p></li>
+          <li><h4>Parte con horas acotadas</h4><p>Acuerdan el alcance y el horario. Si la necesidad crece, suman más horas.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion-ejecutivos" id="ejecutivos" aria-labelledby="ejecutivos-titulo">
+    <div class="contenedor">
+      <div class="beneficios-grid">
+        <div class="beneficios-intro">
+          <p class="etiqueta-seccion">Para ejecutivos</p>
+          <img class="foto-ejecutivo" src="img/ejecutivo.jpg" width="1100" height="738" loading="lazy" alt="Ejecutivo de barba canosa sonríe mientras trabaja en su notebook en un espacio de coworking">
+          <h2 id="ejecutivos-titulo">Tu experiencia sigue valiendo</h2>
+          <p>Trabaja por horas con varias pymes a la vez y arma tu propia cartera de clientes, con proyectos donde tu trayectoria marca la diferencia desde el primer día.</p>
+          <a class="boton plata" href="#lista" data-tipo="ejecutivo">Quiero sumarme</a>
+        </div>
+        <ul class="beneficios">
+          <li><h3>Vuelve a hacer lo que sabes</h3><p>Proyectos concretos donde décadas de gestión son exactamente lo que se necesita.</p></li>
+          <li><h3>Arma tu propia cartera</h3><p>Trabaja con varias pymes a la vez, sin depender de un solo empleador.</p></li>
+          <li><h3>Tú decides cuánto trabajar</h3><p>Eliges las horas que tienes disponibles y los proyectos que tomas.</p></li>
+          <li><h3>Sumarte no tiene costo</h3><p>Crear tu perfil en Silver Job es gratis.</p></li>
+        </ul>
+      </div>
+      <div class="como-funciona">
+        <h3>Cómo funciona para ti</h3>
+        <ol class="pasos">
+          <li><h4>Crea tu perfil</h4><p>Cuéntanos tu trayectoria, tu área de experiencia y cuántas horas quieres trabajar.</p></li>
+          <li><h4>Validamos tu experiencia</h4><p>Revisamos tu perfil para presentarte ante las pymes con respaldo.</p></li>
+          <li><h4>Recibe propuestas</h4><p>Te conectamos con pymes que necesitan justo lo que sabes hacer.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="formulario-seccion" id="lista" aria-labelledby="lista-titulo">
+    <div class="contenedor">
+      <div class="intro">
+        <h2 id="lista-titulo">Súmate a la lista</h2>
+        <p>Estamos armando el primer grupo de pymes y ejecutivos. Déjanos tus datos y te avisamos cuando abramos.</p>
+      </div>
+
+      <div class="tarjeta-form">
+        <div class="selector" role="tablist" aria-label="Tipo de registro">
+          <button type="button" role="tab" id="tab-pyme" aria-selected="true" aria-controls="form-lista">Soy pyme</button>
+          <button type="button" role="tab" id="tab-ejecutivo" aria-selected="false" aria-controls="form-lista">Soy ejecutivo</button>
+        </div>
+
+        <form id="form-lista" novalidate>
+          <input type="hidden" name="tipo" value="pyme">
+          <div class="campos">
+            <div class="campo"><label for="nombre">Nombre</label><input id="nombre" name="nombre" autocomplete="name" required></div>
+            <div class="campo"><label for="correo">Correo</label><input id="correo" name="correo" type="email" autocomplete="email" required></div>
+
+            <div class="campo solo-pyme"><label for="empresa">Empresa</label><input id="empresa" name="empresa" autocomplete="organization" required></div>
+            <div class="campo solo-pyme"><label for="area-pyme">¿Qué gerencia necesitas?</label>
+              <select id="area-pyme" name="area" required>
+                <option value="">Elige una</option>
+                <option>Gerencia general</option><option>Operaciones</option><option>Marketing</option><option>Finanzas</option><option>Comercial</option><option>Otra</option>
+              </select>
+            </div>
+            <div class="campo ancho solo-pyme"><label for="horas">Horas al mes, aproximado</label>
+              <select id="horas" name="horas" required>
+                <option value="">Elige un rango</option>
+                <option>Menos de 10</option><option>Entre 10 y 20</option><option>Entre 20 y 40</option><option>Más de 40</option>
+              </select>
+            </div>
+
+            <div class="campo ancho solo-ejecutivo" hidden><label for="linkedin">Perfil de LinkedIn</label><input id="linkedin" name="linkedin" type="url" placeholder="https://www.linkedin.com/in/..." disabled required></div>
+            <div class="campo solo-ejecutivo" hidden><label for="area-ejec">Tu área de experiencia</label>
+              <select id="area-ejec" name="area" disabled required>
+                <option value="">Elige una</option>
+                <option>Gerencia general</option><option>Operaciones</option><option>Marketing</option><option>Finanzas</option><option>Comercial</option><option>Otra</option>
+              </select>
+            </div>
+            <div class="campo solo-ejecutivo" hidden><label for="anios">Años de experiencia</label>
+              <select id="anios" name="anios" disabled required>
+                <option value="">Elige un rango</option>
+                <option>Entre 10 y 20</option><option>Entre 20 y 30</option><option>Más de 30</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-pie">
+            <button class="boton" type="submit">Unirme a la lista</button>
+            <small>Solo usaremos tus datos para contactarte sobre Silver Job.</small>
+          </div>
+        </form>
+
+        <div class="confirmacion" id="confirmacion" role="status" aria-live="polite">
+          <h3>Quedaste en la lista</h3>
+          <p id="confirmacion-texto">Te escribiremos cuando abramos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <a class="marca" href="#" aria-label="Silver Job, inicio"><svg class="anillo" viewBox="0 0 32 32" aria-hidden="true"><g transform="rotate(-90 16 16)" fill="none" stroke-width="5"><circle cx="16" cy="16" r="11" stroke="var(--vino)" stroke-dasharray="19.4 49.7"/><circle cx="16" cy="16" r="11" stroke="var(--trigo)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-23.04"/><circle cx="16" cy="16" r="11" stroke="var(--tinta)" stroke-dasharray="19.4 49.7" stroke-dashoffset="-46.08"/></g><circle cx="16" cy="16" r="3.6" fill="currentColor"/></svg><span class="palabra">silverjob</span></a>
+    <span>© 2026 Silver Job</span>
+    <span>Santiago, Chile</span>
+  </div>
+</footer>
+
+<script>
+  // Grilla del mes: V = viña, P = panadería, T = transportes, _ = libre
+  const semanas = ["VPT_V", "PV_TP", "VPTV_", "P_VT_"];
+  const clases = { V: "vina", P: "pan", T: "trans", _: "libre" };
+  const grilla = document.getElementById("grilla");
+  grilla.appendChild(document.createElement("span"));
+  ["Lu", "Ma", "Mi", "Ju", "Vi"].forEach(d => {
+    const e = document.createElement("span"); e.className = "dia"; e.textContent = d; grilla.appendChild(e);
+  });
+  let i = 0;
+  semanas.forEach((fila, s) => {
+    const etiqueta = document.createElement("span");
+    etiqueta.className = "semana"; etiqueta.textContent = "Sem " + (s + 1);
+    grilla.appendChild(etiqueta);
+    [...fila].forEach(c => {
+      const celda = document.createElement("span");
+      celda.className = "celda " + clases[c];
+      celda.style.animationDelay = (150 + i * 55) + "ms";
+      grilla.appendChild(celda); i++;
+    });
+  });
+  // La grilla se llena cuando entra en pantalla
+  const celdas = grilla.querySelectorAll(".celda");
+  celdas.forEach(c => c.style.opacity = "0");
+  const mostrar = () => celdas.forEach(c => { c.style.opacity = ""; c.classList.add("entra"); });
+  if ("IntersectionObserver" in window) {
+    const obs = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { mostrar(); obs.disconnect(); } }, { threshold: .35 });
+    obs.observe(grilla);
+  } else { mostrar(); }
+
+  // Selector pyme / ejecutivo
+  const form = document.getElementById("form-lista");
+  const tabs = { pyme: document.getElementById("tab-pyme"), ejecutivo: document.getElementById("tab-ejecutivo") };
+  function elegir(tipo) {
+    form.tipo.value = tipo;
+    Object.entries(tabs).forEach(([k, b]) => b.setAttribute("aria-selected", String(k === tipo)));
+    document.querySelectorAll(".solo-pyme").forEach(el => {
+      el.hidden = tipo !== "pyme";
+      el.querySelectorAll("input, select").forEach(c => c.disabled = tipo !== "pyme");
+    });
+    document.querySelectorAll(".solo-ejecutivo").forEach(el => {
+      el.hidden = tipo !== "ejecutivo";
+      el.querySelectorAll("input, select").forEach(c => c.disabled = tipo !== "ejecutivo");
+    });
+  }
+  tabs.pyme.addEventListener("click", () => elegir("pyme"));
+  tabs.ejecutivo.addEventListener("click", () => elegir("ejecutivo"));
+  document.querySelectorAll("[data-tipo]").forEach(a => a.addEventListener("click", () => elegir(a.dataset.tipo)));
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const datos = Object.fromEntries(new FormData(form));
+    // PENDIENTE (v2): enviar `datos` a un endpoint que los guarde. En esta versión no se almacenan.
+    console.log("Registro Silver Job", datos);
+    form.hidden = true;
+    document.querySelector(".selector").hidden = true;
+    document.getElementById("confirmacion-texto").textContent = "Te escribiremos a " + datos.correo + " cuando abramos.";
+    document.getElementById("confirmacion").style.display = "block";
+  });
+</script>
+</body>
+</html>
