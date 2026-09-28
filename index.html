@@ -202,6 +202,9 @@
   .campo input:user-invalid { border-color: var(--vino); }
   .form-pie { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
   .form-pie small { color: var(--grafito-2); font-size: .9rem; }
+  .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form-error { margin: 1.25rem 0 0; color: var(--vino); font-weight: 600; font-size: .95rem; }
+  .boton:disabled { opacity: .6; cursor: wait; }
   .confirmacion { display: none; }
   .confirmacion h3 { font-size: 1.5rem; margin: 0 0 .5rem; }
   .confirmacion p { margin: 0; color: var(--grafito-2); }
@@ -390,6 +393,7 @@
 
         <form id="form-lista" novalidate>
           <input type="hidden" name="tipo" value="pyme">
+          <div class="trampa" aria-hidden="true"><label>Sitio web <input name="sitio" tabindex="-1" autocomplete="off"></label></div>
           <div class="campos">
             <div class="campo"><label for="nombre">Nombre</label><input id="nombre" name="nombre" autocomplete="name" required></div>
             <div class="campo"><label for="correo">Correo</label><input id="correo" name="correo" type="email" autocomplete="email" required></div>
@@ -422,6 +426,7 @@
               </select>
             </div>
           </div>
+          <p class="form-error" id="form-error" role="alert" hidden></p>
           <div class="form-pie">
             <button class="boton" type="submit">Unirme a la lista</button>
             <small>Solo usaremos tus datos para contactarte sobre Silver Job.</small>
@@ -494,16 +499,27 @@
   tabs.ejecutivo.addEventListener("click", () => elegir("ejecutivo"));
   document.querySelectorAll("[data-tipo]").forEach(a => a.addEventListener("click", () => elegir(a.dataset.tipo)));
 
-  form.addEventListener("submit", e => {
+  // Envío a la planilla de Google (Apps Script)
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbxc9xATW38mu8vuTBH9ONiVOnxAA4EaSBHx4m2Vttzy_uW9YY8XFrOF3X7svCHYidTF/exec";
+  const errorForm = document.getElementById("form-error");
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     if (!form.checkValidity()) { form.reportValidity(); return; }
+    const boton = form.querySelector('button[type="submit"]');
     const datos = Object.fromEntries(new FormData(form));
-    // PENDIENTE (v2): enviar `datos` a un endpoint que los guarde. En esta versión no se almacenan.
-    console.log("Registro Silver Job", datos);
-    form.hidden = true;
-    document.querySelector(".selector").hidden = true;
-    document.getElementById("confirmacion-texto").textContent = "Te escribiremos a " + datos.correo + " cuando abramos.";
-    document.getElementById("confirmacion").style.display = "block";
+    boton.disabled = true; boton.textContent = "Enviando...";
+    errorForm.hidden = true;
+    try {
+      await fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: new URLSearchParams(datos) });
+      form.hidden = true;
+      document.querySelector(".selector").hidden = true;
+      document.getElementById("confirmacion-texto").textContent = "Te escribiremos a " + datos.correo + " cuando abramos.";
+      document.getElementById("confirmacion").style.display = "block";
+    } catch (err) {
+      boton.disabled = false; boton.textContent = "Unirme a la lista";
+      errorForm.textContent = "No pudimos guardar tu registro. Revisa tu conexión e inténtalo de nuevo.";
+      errorForm.hidden = false;
+    }
   });
 </script>
 </body>
