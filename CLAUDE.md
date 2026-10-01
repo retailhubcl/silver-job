@@ -20,7 +20,7 @@ Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Los **pr
 | Contacto público | tomas@silverjob.cl |
 
 Endpoint del formulario (Apps Script):
-`https://script.google.com/macros/s/AKfycbxc9xATW38mu8vuTBH9ONiVOnxAA4EaSBHx4m2Vttzy_uW9YY8XFrOF3X7svCHYidTF/exec`
+`https://script.google.com/macros/s/AKfycbw9Np-Q-NXn1vAJLqxbbgqyIYjTI8gS5pbItaat_oL4s_3Z1MMuSQgNzQtKq3HFOg_E/exec`
 
 ### Estructura del repositorio
 
@@ -49,7 +49,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `NEXT_PUBLIC_LISTA_ENDPOINT` | Opcional; por defecto el endpoint de abajo |
+| `NEXT_PUBLIC_LISTA_ENDPOINT` | Cargada en Production y Preview con el endpoint de abajo (proyecto de Apps Script vinculado a la planilla "Registros Silver Job"). Al cambiarla hay que volver a desplegar |
 
 ---
 

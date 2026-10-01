@@ -7,7 +7,7 @@ import { EVENTO_PLAN, EVENTO_TIPO, type TipoRegistro } from "@/lib/eventos";
 // Planilla de Google (Apps Script); debe responder {"result":"success"}
 const ENDPOINT =
   process.env.NEXT_PUBLIC_LISTA_ENDPOINT ??
-  "https://script.google.com/macros/s/AKfycbxc9xATW38mu8vuTBH9ONiVOnxAA4EaSBHx4m2Vttzy_uW9YY8XFrOF3X7svCHYidTF/exec";
+  "https://script.google.com/macros/s/AKfycbw9Np-Q-NXn1vAJLqxbbgqyIYjTI8gS5pbItaat_oL4s_3Z1MMuSQgNzQtKq3HFOg_E/exec";
 
 const AREAS = ["Gerencia general", "Operaciones", "Marketing", "Finanzas", "Comercial", "Otra"];
 
