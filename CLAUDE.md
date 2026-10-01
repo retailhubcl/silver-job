@@ -30,12 +30,12 @@ app/
   globals.css                 Estilos del sitio (sistema de diseño de abajo)
   page.tsx                    Página principal
   privacidad/page.tsx         Política de privacidad (noindex); /privacidad.html redirige aquí
-  pagar/page.tsx              Elegir plan y pagar (noindex, no enlazada desde la landing)
+  pagar/page.tsx              Cotizar y pagar un plan o bloques (?tipo=bloque); noindex, no enlazada desde la landing
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
-components/                   Anillo, CalendarioPatricia, EnlaceRegistro, FormularioLista, GuiaPlan
-lib/                          planes (precios desde env), mercadopago (API), firma (webhook), eventos
+components/                   Anillo, CalendarioPatricia, Cotizador, EnlaceRegistro, FormularioLista, GuiaPlan
+lib/                          precios (única fuente de precios), mercadopago (API), firma (webhook), eventos
 public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg
 apps-script/lista-espera.gs   Código del Apps Script del formulario (se copia a mano en Google)
 ```
@@ -49,7 +49,6 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `PRECIO_PLAN_BASICO`, `PRECIO_PLAN_ESTANDAR`, `PRECIO_PLAN_INTENSIVO` | Pendientes; monto final con IVA, sin puntos. Un plan sin precio no aparece en `/pagar` |
 | `NEXT_PUBLIC_LISTA_ENDPOINT` | Opcional; por defecto el endpoint de abajo |
 
 ---
@@ -63,7 +62,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 3. **Puente** (fondo plateado): "Hay pymes que crecieron más rápido que su equipo de gestión. Y ejecutivos con décadas de experiencia, listos para su próximo desafío. Silver Job junta a los dos."
 4. **Caso Patricia**: calendario de un mes con sus tres pymes (viña, panadería, transportes). Rotulado como caso ilustrativo.
 5. **Para pymes** (`#pymes`): beneficios (incluye "Perfiles validados y evaluados" con mención al sello Plata certificada), **comparación de costo** con barras (gerente full time $6,7–9,8 MM/mes según guía salarial Robert Half Chile vs. plan Estándar de 18 h ≈ $1,5 MM/mes, rotulado como estimación referencial) y "Cómo funciona" en 3 pasos.
-6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Sin precios ("se publicarán al abrir"). **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Reglas: contratación hasta el día 5, horas del mes, bloques adicionales, un solo pago.
+6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Muestra el precio hora con IVA por tramo y gerencia, tomado de `lib/precios.ts`. **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Reglas: contratación hasta el día 5, horas del mes, bloques adicionales, un solo pago.
 7. **Para ejecutivos** (`#ejecutivos`): diagramación invertida respecto de pymes, viñetas con forma de lingote, nota "Crear tu perfil es gratis. Solo pagas un fee único cuando se concreta un match". Bloque **Plata certificada** con lingote grande y ejemplo de nota 4,8 (el quinto lingote lleno al 80%). "Cómo funciona" en 3 pasos (incluye agenda).
 8. **Preguntas frecuentes** (`#preguntas`): acordeón con `<details>`: responsabilidad del trabajo, horas no usadas, validación, pagos, costo para ejecutivos, confidencialidad.
 9. **Formulario** (`#lista`): selector Soy pyme / Soy ejecutivo, casilla de consentimiento obligatoria con enlace a privacidad, confirmación con botones para compartir por WhatsApp y copiar el enlace.
@@ -73,7 +72,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 
 Campos enviados (URLSearchParams): `tipo` (pyme/ejecutivo), `nombre`, `correo`, `empresa`, `area`, `horas`, `linkedin`, `anios`, `consentimiento`, más `sitio` (campo trampa antibots).
 
-- Opciones de `horas`: "Hasta 10 (Básico)", "Entre 11 y 25 (Estándar)", "Entre 26 y 40 (Intensivo)", "Aún no lo sé".
+- Opciones de `horas`: "Hasta 10 (Básico)", "Entre 11 y 26 (Estándar)", "Entre 27 y 40 (Intensivo)", "Aún no lo sé".
 - LinkedIn es `type="text"`; el JS agrega `https://` si falta y exige que contenga `linkedin.com/in/`.
 - El envío **no** usa `mode: "no-cors"`: lee la respuesta y solo confirma si la planilla devuelve `{"result":"success"}`. Si no, muestra error con el correo de contacto.
 - El Apps Script (`apps-script/lista-espera.gs`) devuelve JSON con ContentService, agrega las columnas faltantes por nombre y descarta envíos con el campo trampa lleno.
@@ -217,7 +216,7 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 1. Reemplazar el código del Apps Script por `apps-script/lista-espera.gs` y publicar una **nueva versión de la implementación existente**, para que la URL no cambie. Mientras no se haga, el formulario puede mostrar error aunque el registro se guarde.
 2. Activar Web Analytics en el proyecto de Vercel.
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
-4. Llevar los precios de la sección 3 al sitio: rangos 10 / 26 / 40 en textos, regla visual, formulario y guía de planes; `/pagar` calcula con gerencia × horas, piso, bloques, plan anual y fee de match (reemplaza las variables `PRECIO_PLAN_*`). `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
+4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo. El fee de match se suma al primer pago según lo que declara la pyme (casilla "primera contratación"); Silver Job lo verifica a mano hasta que exista una base de datos.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**

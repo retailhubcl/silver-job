@@ -1,4 +1,4 @@
-import type { Plan } from "./planes";
+import type { Cotizacion } from "./precios";
 
 const API = "https://api.mercadopago.com";
 
@@ -6,6 +6,10 @@ function token() {
   const t = process.env.MERCADOPAGO_ACCESS_TOKEN;
   if (!t) throw new Error("Falta MERCADOPAGO_ACCESS_TOKEN");
   return t;
+}
+
+export function pagosHabilitados() {
+  return Boolean(process.env.MERCADOPAGO_ACCESS_TOKEN);
 }
 
 export function urlSitio() {
@@ -18,10 +22,15 @@ export interface Comprador {
   empresa: string;
 }
 
-// Crea una preferencia de Checkout Pro y devuelve la URL de pago
-export async function crearPreferencia(plan: Plan & { precio: number }, comprador: Comprador) {
+// Crea una preferencia de Checkout Pro y devuelve la URL de pago.
+// Los montos vienen de una cotización calculada en el servidor.
+export async function crearPreferencia(
+  cotizacion: Cotizacion,
+  comprador: Comprador,
+  metadata: Record<string, string | number | boolean>,
+) {
   const sitio = urlSitio();
-  const referencia = `${plan.id}:${crypto.randomUUID()}`;
+  const referencia = `${metadata.tipo}:${crypto.randomUUID()}`;
   const respuesta = await fetch(`${API}/checkout/preferences`, {
     method: "POST",
     headers: {
@@ -30,18 +39,16 @@ export async function crearPreferencia(plan: Plan & { precio: number }, comprado
       "X-Idempotency-Key": referencia,
     },
     body: JSON.stringify({
-      items: [
-        {
-          id: plan.id,
-          title: `Silver Job, plan ${plan.nombre} (${plan.horas.toLowerCase()})`,
-          quantity: 1,
-          unit_price: plan.precio,
-          currency_id: "CLP",
-        },
-      ],
+      items: cotizacion.lineas.map((l) => ({
+        id: l.id,
+        title: `Silver Job: ${l.concepto}`,
+        quantity: 1,
+        unit_price: l.monto,
+        currency_id: "CLP",
+      })),
       payer: { name: comprador.nombre, email: comprador.correo },
       external_reference: referencia,
-      metadata: { plan: plan.id, empresa: comprador.empresa },
+      metadata: { ...metadata, empresa: comprador.empresa },
       back_urls: {
         success: `${sitio}/pago/exito`,
         pending: `${sitio}/pago/pendiente`,

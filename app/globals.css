@@ -205,7 +205,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .planes-intro { max-width: 40rem; margin-bottom: 3.5rem; }
 .planes-intro h2 { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 600; letter-spacing: -.015em; line-height: 1.08; margin: 0 0 1rem; text-wrap: balance; }
 .planes-intro p { color: var(--grafito-2); margin: 0; max-width: 48ch; }
-.regla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 10fr 15fr 15fr; gap: 8px; }
+.regla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 10fr 16fr 14fr; gap: 8px; }
 .tramo { padding-right: 1.5rem; }
 .tramo .barra { height: 18px; border-radius: 9px; margin-bottom: .6rem; }
 .tramo:nth-child(1) .barra { background: #D5DAE0; }
@@ -215,6 +215,10 @@ section[id] { scroll-margin-top: 5.5rem; }
 .tramo h3 { font-size: 1.5rem; font-weight: 600; margin: 0 0 .25rem; }
 .tramo .rango { font-weight: 650; margin: 0 0 .5rem; }
 .tramo p { margin: 0; color: var(--grafito-2); max-width: 30ch; }
+.precio-hora { margin: 1rem 0 0; display: grid; gap: .35rem; max-width: 30ch; }
+.precio-hora div { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--linea); padding-top: .35rem; }
+.precio-hora dt { color: var(--grafito-2); font-size: .95rem; }
+.precio-hora dd { margin: 0; font-weight: 650; color: var(--grafito); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .planes-precio { margin: 2rem 0 0; font-size: 1rem; color: var(--grafito-2); }
 .reglas-plan { list-style: none; margin: 4rem 0 0; padding: 2rem 0 0; border-top: 1px solid var(--linea); display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 3rem; }
 .reglas-plan li { max-width: 46ch; }
@@ -340,12 +344,18 @@ section[id] { scroll-margin-top: 5.5rem; }
 .simple h2 { font-size: 1.4rem; margin: 2.5rem 0 .5rem; }
 .simple p, .simple li { color: var(--grafito-2); }
 .simple .fecha { margin: 0 0 2rem; }
-.pago-planes { list-style: none; padding: 0; margin: 2rem 0; display: grid; gap: .75rem; }
-.pago-planes label { display: flex; gap: 1rem; align-items: baseline; padding: 1rem 1.25rem; border: 1px solid var(--linea); border-radius: 12px; background: var(--panel); cursor: pointer; }
-.pago-planes label:has(input:checked) { border-color: var(--grafito); box-shadow: 0 0 0 1px var(--grafito); }
-.pago-planes .precio { margin-left: auto; font-weight: 650; color: var(--grafito); white-space: nowrap; }
-.pago-planes .precio small { display: block; font-size: .8rem; font-weight: 400; color: var(--grafito-2); text-align: right; }
-.pago-campos { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+.pago-opciones { border: 0; padding: 0; margin: 1.5rem 0; display: grid; gap: .5rem; }
+.pago-opciones legend { font-weight: 650; margin-bottom: .5rem; padding: 0; }
+.pago-opciones label { display: flex; gap: .65rem; align-items: baseline; cursor: pointer; }
+.pago-opciones input { accent-color: var(--noche); }
+.pago-resumen { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--linea); border-radius: 12px; background: var(--panel); }
+.pago-resumen ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.pago-resumen li, .pago-total { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+.pago-resumen li strong { white-space: nowrap; font-weight: 600; color: var(--grafito); }
+.pago-total { margin: 1rem 0 0; padding-top: 1rem; border-top: 1px solid var(--linea); }
+.pago-total strong { font-size: 1.3rem; color: var(--noche); white-space: nowrap; }
+.pago-resumen .pago-nota { margin: .75rem 0 0; }
+.pago-campos { display: grid; gap: 1rem; margin: 1.5rem 0; }
 .pago-campos label { display: grid; gap: .3rem; font-weight: 600; }
-.pago-campos input { font: inherit; padding: .7rem .8rem; border: 1px solid var(--linea); border-radius: 8px; background: #fff; }
+.pago-campos input, .pago-campos select { font: inherit; padding: .7rem .8rem; border: 1px solid var(--linea); border-radius: 8px; background: #fff; }
 .pago-nota { font-size: .95rem; }
