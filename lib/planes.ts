@@ -1,4 +1,4 @@
-// Planes mensuales de Silver Job. Los precios (CLP, IVA incluido) vienen de variables
+// Planes mensuales de Silver Job. Los precios (CLP, monto final con IVA) vienen de variables
 // de entorno para poder publicarlos sin cambiar código; un plan sin precio no se vende.
 export type IdPlan = "basico" | "estandar" | "intensivo";
 
