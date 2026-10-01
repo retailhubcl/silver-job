@@ -2,7 +2,7 @@
 
 Marketplace chileno de **gerentes fraccionales**: conecta ejecutivos C-Level senior ("generación silver") con pymes que no pueden contratar un gerente a tiempo completo y lo contratan por horas. Un mismo ejecutivo puede atender a varias pymes. Fundador: Tomás.
 
-Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Todos los montos son **sin IVA**.
+Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Los **precios a la pyme incluyen IVA** (19%, sobre el total); los valores hora del ejecutivo son montos de honorarios, sin IVA.
 
 ---
 
@@ -117,14 +117,41 @@ Principios: la plata es el color protagonista; los colores del logo (vino, trigo
 
 | Tramo | Horas al mes |
 |---|---|
-| Básico | Hasta 10 |
-| Estándar | 11 a 25 (el que se espera más popular) |
-| Intensivo | 26 a 40 |
+| Básico | 1 a 10 |
+| Estándar | 11 a 26 (el que se espera más popular) |
+| Intensivo | 27 a 40 |
 
 - Pago único mensual **todo incluido**: cubre el margen de la plataforma y el pago al ejecutivo.
 - Opción de plan anual.
 - **Fee de match**: cobro único al concretarse la conexión, a **ambas partes** por separado (montos distintos para pyme y ejecutivo).
-- **Horas incrementales**: bloques pequeños (por ejemplo, de 5 h) con recargo de 10–15% sobre el valor hora del tramo.
+- **Horas incrementales**: bloques de 5 h con recargo de 10% sobre el precio hora del tramo.
+
+### Precios (definidos, octubre de 2026)
+
+**Mensualidad** = horas contratadas × precio hora del tramo, según la gerencia. Se fija al contratar y se paga por adelantado; no depende del uso.
+
+**Precio hora para la pyme (IVA incluido).** Margen de Silver Job sobre el precio neto (Básico 30%, Estándar 25%, Intensivo 20%), más 19% de IVA sobre el total, redondeado al múltiplo de $500: `precio = redondeo500(valor hora del ejecutivo / (1 − margen) × 1,19)`.
+
+| Tramo | Gerente General | Otras gerencias |
+|---|---|---|
+| Básico (1 a 10 h) | $127.500 | $102.000 |
+| Estándar (11 a 26 h) | $119.000 | $95.000 |
+| Intensivo (27 a 40 h) | $111.500 | $89.500 |
+
+Por el redondeo, los márgenes reales de otras gerencias quedan en 24,8% (Estándar) y 20,2% (Intensivo).
+
+- **Piso entre tramos**: la mensualidad nunca es menor que el tope del tramo anterior. En la práctica solo afecta a 27 h: se cobra lo mismo que 26 h en Estándar ($3.094.000 con Gerente General, $2.470.000 con otras gerencias).
+- **Bloques adicionales de 5 h** (recargo 10% sobre el precio hora del tramo, redondeado a $500). Se pueden sumar aunque la pyme ya tenga 40 h; no cambian el tramo.
+
+| Tramo | Bloque de 5 h, Gerente General | Bloque de 5 h, otras gerencias |
+|---|---|---|
+| Básico | $702.500 | $560.000 |
+| Estándar | $655.000 | $522.500 |
+| Intensivo | $612.500 | $492.500 |
+
+- **Plan anual**: pago adelantado de 12 mensualidades con 10% de descuento, en un solo cobro. Las horas de cada mes se siguen consumiendo dentro de ese mes. Ejemplo: 18 h al mes de Operaciones = $1.710.000 × 12 × 0,9 = $18.468.000.
+- **Fee de match** (IVA incluido): **$150.000 a la pyme**, cobrado con Mercado Pago; **$50.000 al ejecutivo**, descontado de su primera liquidación.
+- **Comparación de costo del sitio**: se mantiene "cerca de $1,5 millones" (18 h del plan Estándar con el mix 30/70 = $1.545.882 netos).
 
 ### Valores hora de referencia (lo que recibe el ejecutivo)
 
@@ -161,7 +188,9 @@ Los entregables del trabajo son **responsabilidad exclusiva de las partes** que 
 
 ---
 
-## 4. Supuestos de la planilla de pricing (por validar)
+## 4. Supuestos de la planilla de pricing
+
+Los precios definidos están en la sección 3. Esta planilla queda como referencia para escenarios (mix, horas promedio, punto de equilibrio).
 
 Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenarios). Las celdas amarillas son editables. **Estos montos son propuestas, no decisiones**:
 
@@ -188,12 +217,11 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 1. Reemplazar el código del Apps Script por `apps-script/lista-espera.gs` y publicar una **nueva versión de la implementación existente**, para que la URL no cambie. Mientras no se haga, el formulario puede mostrar error aunque el registro se guarde.
 2. Activar Web Analytics en el proyecto de Vercel.
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
-4. Cargar los precios en Vercel. Decisión: las variables `PRECIO_PLAN_*` llevan el **monto final con IVA** (la página muestra "IVA incluido"), aunque los montos de negocio de este documento sean sin IVA. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
+4. Llevar los precios de la sección 3 al sitio: rangos 10 / 26 / 40 en textos, regla visual, formulario y guía de planes; `/pagar` calcula con gerencia × horas, piso, bloques, plan anual y fee de match (reemplaza las variables `PRECIO_PLAN_*`). `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**
-- Cobro en línea aún no implementado para: plan anual, fee de match (pyme y ejecutivo) y bloques de horas incrementales.
-- Definir los montos finales por tramo y del fee de match, y actualizar la cifra de ≈ $1,5 MM de la comparación de costo si cambian.
+- Descontar el fee de match del ejecutivo en su primera liquidación (proceso de liquidaciones aún no construido).
 - Revisión legal de los términos y de la política de privacidad.
 
 **Mejoras de UX pendientes (esfuerzo alto):**
