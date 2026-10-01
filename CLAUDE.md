@@ -34,13 +34,15 @@ app/
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
-components/                   Anillo, CalendarioPatricia, Cotizador, EnlaceRegistro, FormularioLista, GuiaPlan
+components/                   Anillo, CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan
 lib/                          precios (única fuente de precios), mercadopago (API), firma (webhook), eventos
-public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg
+app/fuentes/                  Source Sans 3 y Source Serif 4 (woff2, subconjunto latino) con sus licencias
+app/robots.ts, sitemap.ts     robots.txt y sitemap.xml; íconos en app/icon.svg, apple-icon.png y favicon.ico
+public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg (se sirven con next/image)
 apps-script/lista-espera.gs   Código del Apps Script del formulario (se copia a mano en Google)
 ```
 
-Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run build`.
+Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `npm run build`.
 
 ### Variables de entorno (Vercel)
 
@@ -83,7 +85,7 @@ Los eventos se envían con `track()` de `@vercel/analytics`: `clic_registro` (co
 
 ### Sistema de diseño
 
-Tipografías (Google Fonts): títulos **Source Serif 4**, texto **Source Sans 3**.
+Tipografías (servidas desde el sitio con `next/font/local`, archivos y licencias OFL en `app/fuentes/`): títulos **Source Serif 4** (con eje óptico), texto **Source Sans 3**.
 
 ```
 --plata: #EDEFF1        fondo principal
@@ -213,8 +215,8 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 ## 6. Pendientes
 
 **Para dejar operativa la versión publicada (Next.js, ya en producción):**
-1. Reemplazar el código del Apps Script por `apps-script/lista-espera.gs` y publicar una **nueva versión de la implementación existente**, para que la URL no cambie. Mientras no se haga, el formulario puede mostrar error aunque el registro se guarde.
-2. Activar Web Analytics en el proyecto de Vercel.
+1. ~~Publicar el Apps Script~~ Hecho el 1/10/2026: `apps-script/lista-espera.gs` publicado en el proyecto vinculado a la planilla; el sitio usa su URL (`NEXT_PUBLIC_LISTA_ENDPOINT`).
+2. ~~Activar Web Analytics~~ Hecho el 1/10/2026 (visitas; los eventos requieren plan Pro).
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
 4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo. El fee de match se suma al primer pago según lo que declara la pyme (casilla "primera contratación"); Silver Job lo verifica a mano hasta que exista una base de datos.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
@@ -223,7 +225,43 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 - Descontar el fee de match del ejecutivo en su primera liquidación (proceso de liquidaciones aún no construido).
 - Revisión legal de los términos y de la política de privacidad.
 
-**Mejoras de UX pendientes (esfuerzo alto):**
-- Separar los recorridos en páginas `/pymes` y `/ejecutivos`, cada una con su formulario.
-- Reemplazar las imágenes ilustrativas por fotos y testimonios reales de los pilotos.
-- Rediseñar el logo para que evoque la plata (obliga a actualizar el kit de redes).
+**Mejoras de UX:** ver la sección 7.
+
+---
+
+## 7. Auditoría UX/UI (1 de octubre de 2026)
+
+Ordenada por impacto/esfuerzo. Medición con Lighthouse en móvil simulado sobre la compilación de producción: antes, rendimiento 80 (FCP 2,4 s, Speed Index 4,3 s, TBT 390 ms, LCP 2,9 s sin contar Google Fonts, que no cargaba en el entorno de medición); después de los puntos 2 a 10, rendimiento 94 (FCP 0,9 s, Speed Index 0,9 s, TBT 90 ms, LCP 3,0 s con las fuentes incluidas). Accesibilidad 100 y SEO 100.
+
+| # | Mejora | Tipo | Estado |
+|---|---|---|---|
+| 1 | Publicar el Apps Script (el formulario mostraba error aunque guardaba) | Experiencia | Hecho |
+| 2 | Foto del hero y demás imágenes con `next/image` (AVIF/WebP, tamaño según pantalla): hero de 112 KB a ~21–27 KB | Rendimiento | Hecho |
+| 3 | Fuentes servidas desde el sitio con `next/font/local` (sin Google Fonts) | Rendimiento | Hecho |
+| 4 | Menú móvil: textos cortos sin cortes y áreas táctiles de 44 px | Experiencia | Hecho |
+| 5 | Encabezado móvil que se oculta al bajar y vuelve al subir | Experiencia | Hecho |
+| 6 | Ejemplo de mensualidad y botón "Súmate con este plan" bajo los precios | Experiencia | Hecho |
+| 7 | "+ IVA" en la cifra de la comparación de costo | Experiencia | Hecho |
+| 8 | Precios alineados entre tramos en escritorio | Visual | Hecho |
+| 9 | Logo apunta a `/` y su nombre accesible incluye el texto visible | Accesibilidad | Hecho |
+| 10 | `robots.txt`, `sitemap.xml`, `favicon.ico`, ícono para iOS, URL canónica y color del navegador | SEO | Hecho |
+| 11 | Acortar la página en móvil (~14.300 px; la sección "Silver Job junta a los dos" ocupa casi dos pantallas) | Experiencia | Pendiente |
+| 12 | La guía "¿Qué plan necesitas?" muestra el costo estimado | Experiencia | Pendiente |
+| 13 | Validación del formulario con mensajes propios bajo cada campo | Experiencia | Pendiente |
+| 14 | Menos JavaScript (53 KB sin usar, 13 KB de compatibilidad antigua) | Rendimiento | Pendiente |
+| 15 | Contacto por WhatsApp | Experiencia | Pendiente |
+| 16 | Datos estructurados (organización y preguntas frecuentes) | SEO | Pendiente |
+| 17 | Selector de horas en `/pagar` más cómodo en móvil | Experiencia | Pendiente |
+| 18 | Calendario de Patricia: título repetido y "60 h al mes" partido en móvil | Visual | Pendiente |
+| 19 | Pie de página con navegación, redes y WhatsApp | Experiencia | Pendiente |
+| 20 | Color del navegador móvil | Visual | Hecho (junto con el 10) |
+| 21 | Cabeceras de seguridad antes de abrir los pagos | Buenas prácticas | Pendiente |
+| 22 | Medir el embudo sin plan Pro (conteo desde el Apps Script o parámetros de campaña) | Datos | Pendiente |
+| 23 | Prueba de confianza en el hero (estado del lanzamiento, primeros pilotos) | Experiencia | Pendiente |
+| 24 | Fotos y testimonios reales de los pilotos | Visual | Pendiente |
+| 25 | Páginas separadas `/pymes` y `/ejecutivos`, cada una con su formulario | Experiencia | Pendiente |
+| 26 | Rediseñar el logo para que evoque la plata (obliga a actualizar el kit de redes) | Visual | Pendiente |
+
+Notas de los puntos hechos:
+- La fuente de títulos se mantiene con eje óptico (122 KB) para conservar el aspecto del hero. La versión sin eje óptico (51 KB) subía el rendimiento a 96 y bajaba el LCP a 2,7 s, pero el título se ve más grueso y ancho: es una decisión de marca, no técnica.
+- El encabezado se oculta solo en móvil (≤ 900 px); en escritorio queda fijo.

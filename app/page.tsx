@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Anillo from "@/components/Anillo";
 import CalendarioPatricia from "@/components/CalendarioPatricia";
+import Encabezado from "@/components/Encabezado";
 import EnlaceRegistro from "@/components/EnlaceRegistro";
 import FormularioLista from "@/components/FormularioLista";
 import GuiaPlan from "@/components/GuiaPlan";
-import { HORAS_MAX, TRAMOS, formatoCLP, type IdTramo } from "@/lib/precios";
+import { HORAS_MAX, TRAMOS, formatoCLP, mensualidad, type IdTramo } from "@/lib/precios";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+const EJEMPLO = { horas: 18, ...mensualidad("otras", 18) };
 
 const USO_TRAMO: Record<IdTramo, string> = {
   basico: "Para ordenar un tema puntual o tener una segunda opinión experta.",
@@ -11,24 +20,12 @@ const USO_TRAMO: Record<IdTramo, string> = {
   intensivo: "Para una etapa de cambio fuerte o un proyecto de crecimiento.",
 };
 
-/* eslint-disable @next/next/no-img-element */
 export default function Inicio() {
   return (
     <>
       <svg width="0" height="0" style={{ "position": "absolute" }} aria-hidden="true"><defs><linearGradient id="plata-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F7F8FA" /><stop offset=".55" stopColor="#C9D0D7" /><stop offset="1" stopColor="#8E99A5" /></linearGradient></defs></svg>
 
-      <header className="encabezado">
-          <div className="contenedor">
-            <a className="marca" href="#" aria-label="Silver Job, inicio"><Anillo /><span className="palabra">silverjob</span></a>
-            <nav className="nav" aria-label="Principal">
-              <a href="#pymes">Para pymes</a>
-              <a href="#ejecutivos">Para ejecutivos</a>
-              <a href="#planes">Planes</a>
-              <a href="#preguntas">Preguntas</a>
-            </nav>
-            <a className="boton plata boton-encabezado" href="#lista">Súmate a la lista</a>
-          </div>
-        </header>
+      <Encabezado />
 
       <div className="oscuro">
         <div className="fondo-anillo"><Anillo /></div>
@@ -45,7 +42,7 @@ export default function Inicio() {
             </div>
 
             <figure className="foto-hero">
-              <img src="/img/patricia-vina.jpg" width="900" height="1117" fetchPriority="high" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar" />
+              <Image src="/img/patricia-vina.jpg" width={900} height={1117} preload fetchPriority="high" sizes="(max-width: 900px) min(calc(100vw - 2.5rem), 30rem), 480px" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar" />
               <figcaption><Anillo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes.</span></figcaption>
             </figure>
           </div>
@@ -86,11 +83,11 @@ export default function Inicio() {
             </figure>
               <div className="fotos">
                 <figure className="foto-caso">
-                  <img src="/img/patricia-panaderia.jpg" width="1100" height="738" loading="lazy" alt="Patricia revisa costos en una tablet junto al dueño de una panadería de barrio" />
+                  <Image src="/img/patricia-panaderia.jpg" width={1100} height={738} sizes="(max-width: 900px) calc(100vw - 2.5rem), 620px" alt="Patricia revisa costos en una tablet junto al dueño de una panadería de barrio" />
                   <figcaption><span className="punto" style={{ "background": "var(--trigo)" }}></span><strong>Panadería con tres locales</strong><span>20 h al mes</span></figcaption>
                 </figure>
                 <figure className="foto-caso">
-                  <img src="/img/patricia-transportes.jpg" width="1100" height="738" loading="lazy" alt="Patricia muestra una ruta en una tablet a la jefa de operaciones de una empresa de transportes" />
+                  <Image src="/img/patricia-transportes.jpg" width={1100} height={738} sizes="(max-width: 900px) calc(100vw - 2.5rem), 620px" alt="Patricia muestra una ruta en una tablet a la jefa de operaciones de una empresa de transportes" />
                   <figcaption><span className="punto" style={{ "background": "var(--tinta)" }}></span><strong>Empresa de transportes</strong><span>16 h al mes</span></figcaption>
                 </figure>
               </div>
@@ -117,9 +114,9 @@ export default function Inicio() {
             </div>
             <div className="comparacion">
               <h3>Lo que cuesta la gerencia de operaciones, a tiempo completo o por horas</h3>
-              <div className="barras" role="img" aria-label="Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. Un plan Estándar de Silver Job de 18 horas costaría cerca de 1,5 millones al mes.">
+              <div className="barras" role="img" aria-label="Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. Un plan Estándar de Silver Job de 18 horas costaría cerca de 1,5 millones al mes, más IVA.">
                 <div className="fila-barra"><span className="etq">Gerente a tiempo completo</span><div className="pista"><div className="barra-costo completo"></div></div><span className="monto">$6,7 a $9,8 millones al mes</span></div>
-                <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones al mes</span></div>
+                <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones + IVA al mes</span></div>
               </div>
               <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. El valor de Silver Job es referencial: 18 horas del plan Estándar sin IVA, con una mezcla de gerencias.</p>
             </div>
@@ -156,6 +153,10 @@ export default function Inicio() {
               ))}
             </ol>
             <p className="planes-precio">Precio por hora, IVA incluido. La mensualidad es el precio hora de tu tramo por las horas que contratas. Otras gerencias: Operaciones, Marketing, Finanzas y Comercial.</p>
+            <div className="planes-ejemplo">
+              <p><span>Ejemplo</span> {EJEMPLO.horas} horas de Operaciones en el plan {EJEMPLO.tramo.nombre}: <strong>{formatoCLP(EJEMPLO.monto)} al mes</strong>, IVA incluido.</p>
+              <EnlaceRegistro className="boton" tipo="pyme">Súmate con este plan</EnlaceRegistro>
+            </div>
             <GuiaPlan />
             <ul className="reglas-plan">
               <li><strong>Contratas hasta el día 5</strong><span>Las horas de cada mes se contratan hasta el día 5 de ese mes.</span></li>
@@ -172,7 +173,7 @@ export default function Inicio() {
             <div className="beneficios-grid">
               <div className="beneficios-intro">
                 <p className="etiqueta-seccion">Para ejecutivos</p>
-                <img className="foto-ejecutivo" src="/img/ejecutivo.jpg" width="1100" height="738" loading="lazy" alt="Ejecutivo de barba canosa sonríe mientras trabaja en su notebook en un espacio de coworking" />
+                <Image className="foto-ejecutivo" src="/img/ejecutivo.jpg" width={1100} height={738} sizes="(max-width: 900px) min(calc(100vw - 2.5rem), 32rem), 512px" alt="Ejecutivo de barba canosa sonríe mientras trabaja en su notebook en un espacio de coworking" />
                 <h2 id="ejecutivos-titulo">Tu trayectoria, donde más se necesita</h2>
                 <p>Trabaja por horas con varias pymes a la vez y arma tu propia cartera de clientes, con proyectos donde tu trayectoria marca la diferencia desde el primer día.</p>
                 <EnlaceRegistro className="boton plata" tipo="ejecutivo">Súmate como ejecutivo</EnlaceRegistro>
@@ -237,7 +238,7 @@ export default function Inicio() {
       <footer className="pie">
         <div className="contenedor">
           <div className="pie-marca">
-            <a className="marca" href="#" aria-label="Silver Job, inicio"><Anillo /><span className="palabra">silverjob</span></a>
+            <a className="marca" href="/" aria-label="silverjob, ir al inicio"><Anillo /><span className="palabra">silverjob</span></a>
             <p>Silver Job nace en Santiago para conectar la experiencia de ejecutivos senior con pymes que quieren crecer.</p>
           </div>
           <div className="pie-enlaces">
