@@ -9,7 +9,7 @@ export default function Inicio() {
   return (
     <>
       <svg width="0" height="0" style={{ "position": "absolute" }} aria-hidden="true"><defs><linearGradient id="plata-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F7F8FA" /><stop offset=".55" stopColor="#C9D0D7" /><stop offset="1" stopColor="#8E99A5" /></linearGradient></defs></svg>
-      
+
       <header className="encabezado">
           <div className="contenedor">
             <a className="marca" href="#" aria-label="Silver Job, inicio"><Anillo /><span className="palabra">silverjob</span></a>
@@ -22,10 +22,10 @@ export default function Inicio() {
             <a className="boton plata boton-encabezado" href="#lista">Súmate a la lista</a>
           </div>
         </header>
-      
+
       <div className="oscuro">
         <div className="fondo-anillo"><Anillo /></div>
-      
+
         <section className="hero">
           <div className="contenedor">
             <div>
@@ -36,7 +36,7 @@ export default function Inicio() {
                 <EnlaceRegistro className="boton contorno" tipo="ejecutivo">Súmate como ejecutivo</EnlaceRegistro>
               </div>
             </div>
-      
+
             <figure className="foto-hero">
               <img src="/img/patricia-vina.jpg" width="900" height="1117" fetchPriority="high" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar" />
               <figcaption><Anillo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes.</span></figcaption>
@@ -44,7 +44,7 @@ export default function Inicio() {
           </div>
         </section>
       </div>
-      
+
       <main>
         <section className="puente" aria-label="Por qué existe Silver Job">
           <div className="anillo-enorme"><Anillo /></div>
@@ -57,8 +57,8 @@ export default function Inicio() {
             <p className="cierre">Silver Job junta a los dos.</p>
           </div>
         </section>
-      
-      
+
+
         <section className="patricia" aria-labelledby="patricia-titulo">
           <div className="contenedor">
             <div className="patricia-intro">
@@ -90,7 +90,7 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-      
+
         <section className="seccion-pymes" id="pymes" aria-labelledby="pymes-titulo">
           <div className="contenedor">
             <div className="beneficios-grid">
@@ -126,7 +126,7 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-      
+
         <section className="planes" id="planes" aria-labelledby="planes-titulo">
           <div className="contenedor">
             <div className="planes-intro">
@@ -148,7 +148,7 @@ export default function Inicio() {
             </ul>
           </div>
         </section>
-      
+
         <section className="seccion-ejecutivos" id="ejecutivos" aria-labelledby="ejecutivos-titulo">
           <div className="contenedor">
             <div className="beneficios-grid">
@@ -189,7 +189,7 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-      
+
         <section className="preguntas" id="preguntas" aria-labelledby="preguntas-titulo">
           <div className="contenedor">
             <h2 id="preguntas-titulo">Preguntas frecuentes</h2>
@@ -203,19 +203,19 @@ export default function Inicio() {
             </div>
           </div>
         </section>
-      
+
         <section className="formulario-seccion" id="lista" aria-labelledby="lista-titulo">
           <div className="contenedor">
             <div className="intro">
               <h2 id="lista-titulo">Súmate a la lista</h2>
               <p>Estamos armando el primer grupo de pymes y ejecutivos. Déjanos tus datos y te avisamos cuando abramos.</p>
             </div>
-      
+
             <FormularioLista />
           </div>
         </section>
       </main>
-      
+
       <footer className="pie">
         <div className="contenedor">
           <div className="pie-marca">
