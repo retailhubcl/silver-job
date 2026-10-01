@@ -344,6 +344,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .pago-planes label { display: flex; gap: 1rem; align-items: baseline; padding: 1rem 1.25rem; border: 1px solid var(--linea); border-radius: 12px; background: var(--panel); cursor: pointer; }
 .pago-planes label:has(input:checked) { border-color: var(--grafito); box-shadow: 0 0 0 1px var(--grafito); }
 .pago-planes .precio { margin-left: auto; font-weight: 650; color: var(--grafito); white-space: nowrap; }
+.pago-planes .precio small { display: block; font-size: .8rem; font-weight: 400; color: var(--grafito-2); text-align: right; }
 .pago-campos { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
 .pago-campos label { display: grid; gap: .3rem; font-weight: 600; }
 .pago-campos input { font: inherit; padding: .7rem .8rem; border: 1px solid var(--linea); border-radius: 8px; background: #fff; }

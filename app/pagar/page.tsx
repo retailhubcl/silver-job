@@ -28,6 +28,7 @@ export default async function Pagar({ searchParams }: { searchParams: Promise<{ 
       ) : (
         <form method="post" action="/api/checkout">
           <p>Eliges las horas del mes y pagas con Mercado Pago. La mensualidad incluye las horas del ejecutivo.</p>
+          <p className="pago-nota">Las horas de cada mes se contratan hasta el día 5 de ese mes y se usan dentro del mes contratado.</p>
           {error && ERRORES[error] && <p className="form-error" role="alert">{ERRORES[error]}</p>}
           <ul className="pago-planes">
             {disponibles.map((p, i) => (
@@ -35,7 +36,7 @@ export default async function Pagar({ searchParams }: { searchParams: Promise<{ 
                 <label>
                   <input type="radio" name="plan" value={p.id} required defaultChecked={elegido ? elegido === p.id : i === 0} />
                   <span><strong>{p.nombre}</strong><br />{p.horas}</span>
-                  <span className="precio">{formatoCLP(p.precio)} al mes</span>
+                  <span className="precio">{formatoCLP(p.precio)} al mes<small>IVA incluido</small></span>
                 </label>
               </li>
             ))}

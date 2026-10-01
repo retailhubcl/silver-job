@@ -49,7 +49,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `PRECIO_PLAN_BASICO`, `PRECIO_PLAN_ESTANDAR`, `PRECIO_PLAN_INTENSIVO` | Pendientes; un plan sin precio no aparece en `/pagar` |
+| `PRECIO_PLAN_BASICO`, `PRECIO_PLAN_ESTANDAR`, `PRECIO_PLAN_INTENSIVO` | Pendientes; monto final con IVA, sin puntos. Un plan sin precio no aparece en `/pagar` |
 | `NEXT_PUBLIC_LISTA_ENDPOINT` | Opcional; por defecto el endpoint de abajo |
 
 ---
@@ -188,7 +188,7 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 1. Reemplazar el código del Apps Script por `apps-script/lista-espera.gs` y publicar una **nueva versión de la implementación existente**, para que la URL no cambie. Mientras no se haga, el formulario puede mostrar error aunque el registro se guarde.
 2. Activar Web Analytics en el proyecto de Vercel.
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
-4. Definir cómo se cobra el IVA en `/pagar` (los montos del negocio son sin IVA) y cargar los precios.
+4. Cargar los precios en Vercel. Decisión: las variables `PRECIO_PLAN_*` llevan el **monto final con IVA** (la página muestra "IVA incluido"), aunque los montos de negocio de este documento sean sin IVA. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**
