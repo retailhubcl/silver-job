@@ -99,7 +99,7 @@ export default function FormularioLista() {
           <div className="campo ancho solo-pyme" hidden={!esPyme}><label htmlFor="horas">Horas al mes, aproximado</label>
             <select id="horas" name="horas" disabled={!esPyme} required value={horas} onChange={(e) => setHoras(e.target.value)}>
               <option value="">Elige un rango</option>
-              <option>Hasta 10 (Básico)</option><option>Entre 11 y 25 (Estándar)</option><option>Entre 26 y 40 (Intensivo)</option><option>Aún no lo sé</option>
+              <option>Hasta 10 (Básico)</option><option>Entre 11 y 26 (Estándar)</option><option>Entre 27 y 40 (Intensivo)</option><option>Aún no lo sé</option>
             </select>
           </div>
 

@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       monto: pago.transaction_amount,
       referencia: pago.external_reference,
       correo: pago.payer?.email,
-      empresa: pago.metadata?.empresa,
+      metadata: pago.metadata,
     });
     // Siguiente paso: guardar el pago (Supabase) y avisar por correo al equipo.
     return NextResponse.json({ ok: true });

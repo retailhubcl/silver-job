@@ -2,7 +2,7 @@
 
 Marketplace chileno de **gerentes fraccionales**: conecta ejecutivos C-Level senior ("generación silver") con pymes que no pueden contratar un gerente a tiempo completo y lo contratan por horas. Un mismo ejecutivo puede atender a varias pymes. Fundador: Tomás.
 
-Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Todos los montos son **sin IVA**.
+Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Los **precios a la pyme incluyen IVA** (19%, sobre el total); los valores hora del ejecutivo son montos de honorarios, sin IVA.
 
 ---
 
@@ -30,12 +30,12 @@ app/
   globals.css                 Estilos del sitio (sistema de diseño de abajo)
   page.tsx                    Página principal
   privacidad/page.tsx         Política de privacidad (noindex); /privacidad.html redirige aquí
-  pagar/page.tsx              Elegir plan y pagar (noindex, no enlazada desde la landing)
+  pagar/page.tsx              Cotizar y pagar un plan o bloques (?tipo=bloque); noindex, no enlazada desde la landing
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
-components/                   Anillo, CalendarioPatricia, EnlaceRegistro, FormularioLista, GuiaPlan
-lib/                          planes (precios desde env), mercadopago (API), firma (webhook), eventos
+components/                   Anillo, CalendarioPatricia, Cotizador, EnlaceRegistro, FormularioLista, GuiaPlan
+lib/                          precios (única fuente de precios), mercadopago (API), firma (webhook), eventos
 public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg
 apps-script/lista-espera.gs   Código del Apps Script del formulario (se copia a mano en Google)
 ```
@@ -49,7 +49,6 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `PRECIO_PLAN_BASICO`, `PRECIO_PLAN_ESTANDAR`, `PRECIO_PLAN_INTENSIVO` | Pendientes; monto final con IVA, sin puntos. Un plan sin precio no aparece en `/pagar` |
 | `NEXT_PUBLIC_LISTA_ENDPOINT` | Opcional; por defecto el endpoint de abajo |
 
 ---
@@ -63,7 +62,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 3. **Puente** (fondo plateado): "Hay pymes que crecieron más rápido que su equipo de gestión. Y ejecutivos con décadas de experiencia, listos para su próximo desafío. Silver Job junta a los dos."
 4. **Caso Patricia**: calendario de un mes con sus tres pymes (viña, panadería, transportes). Rotulado como caso ilustrativo.
 5. **Para pymes** (`#pymes`): beneficios (incluye "Perfiles validados y evaluados" con mención al sello Plata certificada), **comparación de costo** con barras (gerente full time $6,7–9,8 MM/mes según guía salarial Robert Half Chile vs. plan Estándar de 18 h ≈ $1,5 MM/mes, rotulado como estimación referencial) y "Cómo funciona" en 3 pasos.
-6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Sin precios ("se publicarán al abrir"). **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Reglas: contratación hasta el día 5, horas del mes, bloques adicionales, un solo pago.
+6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Muestra el precio hora con IVA por tramo y gerencia, tomado de `lib/precios.ts`. **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Reglas: contratación hasta el día 5, horas del mes, bloques adicionales, un solo pago.
 7. **Para ejecutivos** (`#ejecutivos`): diagramación invertida respecto de pymes, viñetas con forma de lingote, nota "Crear tu perfil es gratis. Solo pagas un fee único cuando se concreta un match". Bloque **Plata certificada** con lingote grande y ejemplo de nota 4,8 (el quinto lingote lleno al 80%). "Cómo funciona" en 3 pasos (incluye agenda).
 8. **Preguntas frecuentes** (`#preguntas`): acordeón con `<details>`: responsabilidad del trabajo, horas no usadas, validación, pagos, costo para ejecutivos, confidencialidad.
 9. **Formulario** (`#lista`): selector Soy pyme / Soy ejecutivo, casilla de consentimiento obligatoria con enlace a privacidad, confirmación con botones para compartir por WhatsApp y copiar el enlace.
@@ -73,7 +72,7 @@ Comandos: `npm run dev`, `npm test` (firma del webhook y precios), `npm run buil
 
 Campos enviados (URLSearchParams): `tipo` (pyme/ejecutivo), `nombre`, `correo`, `empresa`, `area`, `horas`, `linkedin`, `anios`, `consentimiento`, más `sitio` (campo trampa antibots).
 
-- Opciones de `horas`: "Hasta 10 (Básico)", "Entre 11 y 25 (Estándar)", "Entre 26 y 40 (Intensivo)", "Aún no lo sé".
+- Opciones de `horas`: "Hasta 10 (Básico)", "Entre 11 y 26 (Estándar)", "Entre 27 y 40 (Intensivo)", "Aún no lo sé".
 - LinkedIn es `type="text"`; el JS agrega `https://` si falta y exige que contenga `linkedin.com/in/`.
 - El envío **no** usa `mode: "no-cors"`: lee la respuesta y solo confirma si la planilla devuelve `{"result":"success"}`. Si no, muestra error con el correo de contacto.
 - El Apps Script (`apps-script/lista-espera.gs`) devuelve JSON con ContentService, agrega las columnas faltantes por nombre y descarta envíos con el campo trampa lleno.
@@ -117,14 +116,41 @@ Principios: la plata es el color protagonista; los colores del logo (vino, trigo
 
 | Tramo | Horas al mes |
 |---|---|
-| Básico | Hasta 10 |
-| Estándar | 11 a 25 (el que se espera más popular) |
-| Intensivo | 26 a 40 |
+| Básico | 1 a 10 |
+| Estándar | 11 a 26 (el que se espera más popular) |
+| Intensivo | 27 a 40 |
 
 - Pago único mensual **todo incluido**: cubre el margen de la plataforma y el pago al ejecutivo.
 - Opción de plan anual.
 - **Fee de match**: cobro único al concretarse la conexión, a **ambas partes** por separado (montos distintos para pyme y ejecutivo).
-- **Horas incrementales**: bloques pequeños (por ejemplo, de 5 h) con recargo de 10–15% sobre el valor hora del tramo.
+- **Horas incrementales**: bloques de 5 h con recargo de 10% sobre el precio hora del tramo.
+
+### Precios (definidos, octubre de 2026)
+
+**Mensualidad** = horas contratadas × precio hora del tramo, según la gerencia. Se fija al contratar y se paga por adelantado; no depende del uso.
+
+**Precio hora para la pyme (IVA incluido).** Margen de Silver Job sobre el precio neto (Básico 30%, Estándar 25%, Intensivo 20%), más 19% de IVA sobre el total, redondeado al múltiplo de $500: `precio = redondeo500(valor hora del ejecutivo / (1 − margen) × 1,19)`.
+
+| Tramo | Gerente General | Otras gerencias |
+|---|---|---|
+| Básico (1 a 10 h) | $127.500 | $102.000 |
+| Estándar (11 a 26 h) | $119.000 | $95.000 |
+| Intensivo (27 a 40 h) | $111.500 | $89.500 |
+
+Por el redondeo, los márgenes reales de otras gerencias quedan en 24,8% (Estándar) y 20,2% (Intensivo).
+
+- **Piso entre tramos**: la mensualidad nunca es menor que el tope del tramo anterior. En la práctica solo afecta a 27 h: se cobra lo mismo que 26 h en Estándar ($3.094.000 con Gerente General, $2.470.000 con otras gerencias).
+- **Bloques adicionales de 5 h** (recargo 10% sobre el precio hora del tramo, redondeado a $500). Se pueden sumar aunque la pyme ya tenga 40 h; no cambian el tramo.
+
+| Tramo | Bloque de 5 h, Gerente General | Bloque de 5 h, otras gerencias |
+|---|---|---|
+| Básico | $702.500 | $560.000 |
+| Estándar | $655.000 | $522.500 |
+| Intensivo | $612.500 | $492.500 |
+
+- **Plan anual**: pago adelantado de 12 mensualidades con 10% de descuento, en un solo cobro. Las horas de cada mes se siguen consumiendo dentro de ese mes. Ejemplo: 18 h al mes de Operaciones = $1.710.000 × 12 × 0,9 = $18.468.000.
+- **Fee de match** (IVA incluido): **$150.000 a la pyme**, cobrado con Mercado Pago; **$50.000 al ejecutivo**, descontado de su primera liquidación.
+- **Comparación de costo del sitio**: se mantiene "cerca de $1,5 millones" (18 h del plan Estándar con el mix 30/70 = $1.545.882 netos).
 
 ### Valores hora de referencia (lo que recibe el ejecutivo)
 
@@ -161,7 +187,9 @@ Los entregables del trabajo son **responsabilidad exclusiva de las partes** que 
 
 ---
 
-## 4. Supuestos de la planilla de pricing (por validar)
+## 4. Supuestos de la planilla de pricing
+
+Los precios definidos están en la sección 3. Esta planilla queda como referencia para escenarios (mix, horas promedio, punto de equilibrio).
 
 Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenarios). Las celdas amarillas son editables. **Estos montos son propuestas, no decisiones**:
 
@@ -188,12 +216,11 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 1. Reemplazar el código del Apps Script por `apps-script/lista-espera.gs` y publicar una **nueva versión de la implementación existente**, para que la URL no cambie. Mientras no se haga, el formulario puede mostrar error aunque el registro se guarde.
 2. Activar Web Analytics en el proyecto de Vercel.
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
-4. Cargar los precios en Vercel. Decisión: las variables `PRECIO_PLAN_*` llevan el **monto final con IVA** (la página muestra "IVA incluido"), aunque los montos de negocio de este documento sean sin IVA. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
+4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo. El fee de match se suma al primer pago según lo que declara la pyme (casilla "primera contratación"); Silver Job lo verifica a mano hasta que exista una base de datos.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**
-- Cobro en línea aún no implementado para: plan anual, fee de match (pyme y ejecutivo) y bloques de horas incrementales.
-- Definir los montos finales por tramo y del fee de match, y actualizar la cifra de ≈ $1,5 MM de la comparación de costo si cambian.
+- Descontar el fee de match del ejecutivo en su primera liquidación (proceso de liquidaciones aún no construido).
 - Revisión legal de los términos y de la política de privacidad.
 
 **Mejoras de UX pendientes (esfuerzo alto):**

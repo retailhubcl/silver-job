@@ -3,6 +3,13 @@ import CalendarioPatricia from "@/components/CalendarioPatricia";
 import EnlaceRegistro from "@/components/EnlaceRegistro";
 import FormularioLista from "@/components/FormularioLista";
 import GuiaPlan from "@/components/GuiaPlan";
+import { HORAS_MAX, TRAMOS, formatoCLP, type IdTramo } from "@/lib/precios";
+
+const USO_TRAMO: Record<IdTramo, string> = {
+  basico: "Para ordenar un tema puntual o tener una segunda opinión experta.",
+  estandar: "Para liderar un área con presencia todas las semanas.",
+  intensivo: "Para una etapa de cambio fuerte o un proyecto de crecimiento.",
+};
 
 /* eslint-disable @next/next/no-img-element */
 export default function Inicio() {
@@ -114,7 +121,7 @@ export default function Inicio() {
                 <div className="fila-barra"><span className="etq">Gerente a tiempo completo</span><div className="pista"><div className="barra-costo completo"></div></div><span className="monto">$6,7 a $9,8 millones al mes</span></div>
                 <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones al mes</span></div>
               </div>
-              <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. El valor de Silver Job es una estimación referencial; los precios finales se publicarán al abrir.</p>
+              <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. El valor de Silver Job es referencial: 18 horas del plan Estándar sin IVA, con una mezcla de gerencias.</p>
             </div>
             <div className="como-funciona">
               <h3>Cómo funciona para tu pyme</h3>
@@ -134,17 +141,28 @@ export default function Inicio() {
               <p>Eliges cuántas horas de gerencia necesitas. La mensualidad incluye las horas del ejecutivo, sin cobros aparte.</p>
             </div>
             <ol className="regla" aria-label="Tramos de horas mensuales, de 0 a 40 horas">
-              <li className="tramo" style={{ "--w": "25%" } as React.CSSProperties}><div className="barra"></div><span className="tope">10 h</span><h3>Básico</h3><p className="rango">Hasta 10 horas al mes</p><p>Para ordenar un tema puntual o tener una segunda opinión experta.</p></li>
-              <li className="tramo" style={{ "--w": "62.5%" } as React.CSSProperties}><div className="barra"></div><span className="tope">25 h</span><h3>Estándar</h3><p className="rango">De 11 a 25 horas al mes</p><p>Para liderar un área con presencia todas las semanas.</p></li>
-              <li className="tramo" style={{ "--w": "100%" } as React.CSSProperties}><div className="barra"></div><span className="tope">40 h</span><h3>Intensivo</h3><p className="rango">De 26 a 40 horas al mes</p><p>Para una etapa de cambio fuerte o un proyecto de crecimiento.</p></li>
+              {TRAMOS.map((t) => (
+                <li key={t.id} className="tramo" style={{ "--w": `${(t.hasta / HORAS_MAX) * 100}%` } as React.CSSProperties}>
+                  <div className="barra"></div>
+                  <span className="tope">{t.hasta} h</span>
+                  <h3>{t.nombre}</h3>
+                  <p className="rango">{t.desde === 1 ? `Hasta ${t.hasta}` : `De ${t.desde} a ${t.hasta}`} horas al mes</p>
+                  <p>{USO_TRAMO[t.id]}</p>
+                  <dl className="precio-hora">
+                    <div><dt>Gerente General</dt><dd>{formatoCLP(t.precioHora.general)}</dd></div>
+                    <div><dt>Otras gerencias</dt><dd>{formatoCLP(t.precioHora.otras)}</dd></div>
+                  </dl>
+                </li>
+              ))}
             </ol>
-            <p className="planes-precio">Publicaremos los precios cuando abramos. Si te sumas a la lista, te los enviamos primero.</p>
+            <p className="planes-precio">Precio por hora, IVA incluido. La mensualidad es el precio hora de tu tramo por las horas que contratas. Otras gerencias: Operaciones, Marketing, Finanzas y Comercial.</p>
             <GuiaPlan />
             <ul className="reglas-plan">
               <li><strong>Contratas hasta el día 5</strong><span>Las horas de cada mes se contratan hasta el día 5 de ese mes.</span></li>
               <li><strong>Horas del mes</strong><span>La bolsa de horas se usa dentro del mes contratado.</span></li>
-              <li><strong>¿Necesitas más?</strong><span>Suma bloques de horas sin cambiar de plan.</span></li>
-              <li><strong>Un solo pago</strong><span>Pagas a Silver Job y nosotros le pagamos al ejecutivo. Al concretar el match hay un fee único.</span></li>
+              <li><strong>¿Necesitas más?</strong><span>Suma bloques de 5 horas sin cambiar de plan, con un recargo de 10% sobre el precio hora de tu tramo.</span></li>
+                <li><strong>Plan anual</strong><span>Paga 12 meses por adelantado y obtén 10% de descuento.</span></li>
+              <li><strong>Un solo pago</strong><span>Pagas a Silver Job y nosotros le pagamos al ejecutivo. Al concretar el match hay un fee único de $150.000.</span></li>
             </ul>
           </div>
         </section>

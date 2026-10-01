@@ -6,8 +6,8 @@ import { sugerirHoras } from "@/lib/eventos";
 
 const PLANES = [
   { nombre: "Básico", texto: "hasta 10 horas al mes", opcion: "Hasta 10 (Básico)" },
-  { nombre: "Estándar", texto: "de 11 a 25 horas al mes", opcion: "Entre 11 y 25 (Estándar)" },
-  { nombre: "Intensivo", texto: "de 26 a 40 horas al mes", opcion: "Entre 26 y 40 (Intensivo)" },
+  { nombre: "Estándar", texto: "de 11 a 26 horas al mes", opcion: "Entre 11 y 26 (Estándar)" },
+  { nombre: "Intensivo", texto: "de 27 a 40 horas al mes", opcion: "Entre 27 y 40 (Intensivo)" },
 ];
 
 export default function GuiaPlan() {
