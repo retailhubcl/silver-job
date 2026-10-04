@@ -34,8 +34,8 @@ app/
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
-components/                   Anillo, CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan
-lib/                          precios (única fuente de precios), mercadopago (API), firma (webhook), eventos
+components/                   Anillo, CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan, Pie
+lib/                          precios (única fuente de precios), validacion (formulario de la lista), mercadopago (API), firma (webhook), eventos
 app/fuentes/                  Source Sans 3 y Source Serif 4 (woff2, subconjunto latino) con sus licencias
 app/robots.ts, sitemap.ts     robots.txt y sitemap.xml; íconos en app/icon.svg, apple-icon.png y favicon.ico
 public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg (se sirven con next/image)
@@ -246,8 +246,8 @@ Ordenada por impacto/esfuerzo. Medición con Lighthouse en móvil simulado sobre
 | 9 | Logo apunta a `/` y su nombre accesible incluye el texto visible | Accesibilidad | Hecho |
 | 10 | `robots.txt`, `sitemap.xml`, `favicon.ico`, ícono para iOS, URL canónica y color del navegador | SEO | Hecho |
 | 11 | Acortar la página en móvil (~14.300 px; la sección "Silver Job junta a los dos" ocupa casi dos pantallas) | Experiencia | Pendiente |
-| 12 | La guía "¿Qué plan necesitas?" muestra el costo estimado | Experiencia | Pendiente |
-| 13 | Validación del formulario con mensajes propios bajo cada campo | Experiencia | Pendiente |
+| 12 | La guía "¿Qué plan necesitas?" muestra el costo estimado | Experiencia | Hecho (etapa 1 de la sección 8) |
+| 13 | Validación del formulario con mensajes propios bajo cada campo | Experiencia | Hecho (etapa 1 de la sección 8) |
 | 14 | Menos JavaScript (53 KB sin usar, 13 KB de compatibilidad antigua) | Rendimiento | Pendiente |
 | 15 | Contacto por WhatsApp | Experiencia | Pendiente |
 | 16 | Datos estructurados (organización y preguntas frecuentes) | SEO | Pendiente |
@@ -265,3 +265,17 @@ Ordenada por impacto/esfuerzo. Medición con Lighthouse en móvil simulado sobre
 Notas de los puntos hechos:
 - La fuente de títulos se mantiene con eje óptico (122 KB) para conservar el aspecto del hero. La versión sin eje óptico (51 KB) subía el rendimiento a 96 y bajaba el LCP a 2,7 s, pero el título se ve más grueso y ancho: es una decisión de marca, no técnica.
 - El encabezado se oculta solo en móvil (≤ 900 px); en escritorio queda fijo.
+
+---
+
+## 8. Evaluación de experiencia y usabilidad (4 de octubre de 2026)
+
+Documento completo: [Silver Job: evaluación de experiencia y usabilidad](https://claude.ai/code/artifact/9681a464-2405-40a7-897b-7a233d1b7e71) (notas por dimensión, preguntas de cada visitante, 16 hallazgos con gravedad, matriz impacto × esfuerzo y plan de 21 pasos).
+
+Veredicto: 5,5/10 en experiencia centrada en el cliente. Técnica de primer nivel; faltan confianza (equipo, empresa, testimonios, términos), el estado del servicio (precios públicos pero solo lista de espera sin fecha), contacto humano (WhatsApp, llamada) y la motivación del ejecutivo (ingreso por hora, fee, requisitos).
+
+**Etapa 1 (código, hecha):** enlace "Saltar al contenido" y hero dentro de `main`; el desplazamiento reserva el alto real del encabezado (variable `--alto-encabezado`), así el foco no queda tapado (WCAG 2.4.11); títulos y menú que soportan el texto del sistema al 200 % y textos de lectura de 16 px como mínimo; validación propia del formulario (`lib/validacion.ts`, mensajes bajo cada campo, correo con dominio); página 404 en español; encabezado y pie (`components/Pie.tsx`) en las páginas internas; costo estimado en la guía de plan; cifra con IVA en la comparación; rótulo "Caso ilustrativo" en el caso de Patricia.
+
+**Etapa 2 (espera decisiones de Tomás):** fecha de apertura o estado, WhatsApp y agenda, quiénes somos y datos de la empresa, términos y condiciones con aceptación en `/pagar`, preguntas frecuentes a ~12, ingreso y fee del ejecutivo, jerga ("fee de match"), correo de confirmación.
+
+**Etapa 3:** páginas `/pymes` y `/ejecutivos`, reordenar la página de pymes, prueba social real, medición y pruebas con usuarios.

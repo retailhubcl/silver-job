@@ -6,6 +6,7 @@ import Encabezado from "@/components/Encabezado";
 import EnlaceRegistro from "@/components/EnlaceRegistro";
 import FormularioLista from "@/components/FormularioLista";
 import GuiaPlan from "@/components/GuiaPlan";
+import Pie from "@/components/Pie";
 import { HORAS_MAX, TRAMOS, formatoCLP, mensualidad, type IdTramo } from "@/lib/precios";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function Inicio() {
 
       <Encabezado />
 
+      <main id="contenido" tabIndex={-1}>
       <div className="oscuro">
         <div className="fondo-anillo"><Anillo /></div>
 
@@ -43,13 +45,12 @@ export default function Inicio() {
 
             <figure className="foto-hero">
               <Image src="/img/patricia-vina.jpg" width={900} height={1117} preload fetchPriority="high" sizes="(max-width: 900px) min(calc(100vw - 2.5rem), 30rem), 480px" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar" />
-              <figcaption><Anillo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes.</span></figcaption>
+              <figcaption><Anillo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes. <em>Caso ilustrativo.</em></span></figcaption>
             </figure>
           </div>
         </section>
       </div>
 
-      <main>
         <section className="puente" aria-label="Por qué existe Silver Job">
           <div className="anillo-enorme"><Anillo /></div>
           <div className="contenedor">
@@ -66,13 +67,14 @@ export default function Inicio() {
         <section className="patricia" aria-labelledby="patricia-titulo">
           <div className="contenedor">
             <div className="patricia-intro">
+              <p className="etiqueta-seccion">Caso ilustrativo</p>
               <h2 id="patricia-titulo">Tres pymes, una misma gerenta</h2>
               <p>Patricia fue gerenta de operaciones durante décadas. Hoy reparte su experiencia entre tres empresas que nunca habrían podido contratarla a tiempo completo.</p>
             </div>
             <div className="patricia-grid">
               <figure className="mes" aria-labelledby="mes-titulo">
               <h2 id="mes-titulo">El calendario de Patricia</h2>
-              <p className="nota">Caso ilustrativo. Cada bloque es una mañana de trabajo de 4 horas.</p>
+              <p className="nota">Cada bloque es una mañana de trabajo de 4 horas.</p>
               <CalendarioPatricia />
               <ul className="leyenda">
                 <li><span className="muestra" style={{ "background": "var(--vino)" }}></span><div><strong>Viña familiar</strong><span className="foco">Ordenar la operación de exportación</span></div><span className="horas">24 h</span></li>
@@ -114,9 +116,9 @@ export default function Inicio() {
             </div>
             <div className="comparacion">
               <h3>Lo que cuesta la gerencia de operaciones, a tiempo completo o por horas</h3>
-              <div className="barras" role="img" aria-label="Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. Un plan Estándar de Silver Job de 18 horas costaría cerca de 1,5 millones al mes, más IVA.">
+              <div className="barras" role="img" aria-label="Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. Un plan Estándar de Silver Job de 18 horas costaría cerca de 1,5 millones al mes más IVA, unos 1,8 millones con IVA.">
                 <div className="fila-barra"><span className="etq">Gerente a tiempo completo</span><div className="pista"><div className="barra-costo completo"></div></div><span className="monto">$6,7 a $9,8 millones al mes</span></div>
-                <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones + IVA al mes</span></div>
+                <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones + IVA al mes<small>Unos $1,8 millones con IVA</small></span></div>
               </div>
               <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. El valor de Silver Job es referencial: 18 horas del plan Estándar sin IVA, con una mezcla de gerencias.</p>
             </div>
@@ -235,18 +237,7 @@ export default function Inicio() {
         </section>
       </main>
 
-      <footer className="pie">
-        <div className="contenedor">
-          <div className="pie-marca">
-            <a className="marca" href="/" aria-label="silverjob, ir al inicio"><Anillo /><span className="palabra">silverjob</span></a>
-            <p>Silver Job nace en Santiago para conectar la experiencia de ejecutivos senior con pymes que quieren crecer.</p>
-          </div>
-          <div className="pie-enlaces">
-            <a href="mailto:tomas@silverjob.cl">tomas@silverjob.cl</a>
-            <a href="/privacidad">Política de privacidad</a>
-            <span>© 2026 Silver Job, Santiago, Chile</span>
-          </div>
-        </div>
-      </footer>    </>
+      <Pie />
+    </>
   );
 }

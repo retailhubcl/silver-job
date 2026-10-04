@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import EnlaceRegistro from "@/components/EnlaceRegistro";
 import { sugerirHoras } from "@/lib/eventos";
+import { formatoCLP, mensualidad } from "@/lib/precios";
 
+// "ejemplo" = horas promedio de cada tramo según la planilla de pricing
 const PLANES = [
-  { nombre: "Básico", texto: "hasta 10 horas al mes", opcion: "Hasta 10 (Básico)" },
-  { nombre: "Estándar", texto: "de 11 a 26 horas al mes", opcion: "Entre 11 y 26 (Estándar)" },
-  { nombre: "Intensivo", texto: "de 27 a 40 horas al mes", opcion: "Entre 27 y 40 (Intensivo)" },
+  { nombre: "Básico", texto: "hasta 10 horas al mes", opcion: "Hasta 10 (Básico)", ejemplo: 8 },
+  { nombre: "Estándar", texto: "de 11 a 26 horas al mes", opcion: "Entre 11 y 26 (Estándar)", ejemplo: 18 },
+  { nombre: "Intensivo", texto: "de 27 a 40 horas al mes", opcion: "Entre 27 y 40 (Intensivo)", ejemplo: 33 },
 ];
 
 export default function GuiaPlan() {
@@ -39,7 +41,13 @@ export default function GuiaPlan() {
       <div className="guia-pie">
         <p className="guia-resultado" id="guia-resultado" aria-live="polite">
           {plan ? (
-            <>Te sugerimos el plan <strong>{plan.nombre}</strong>, {plan.texto}.</>
+            <>
+              Te sugerimos el plan <strong>{plan.nombre}</strong>, {plan.texto}.
+              <span className="guia-costo">
+                Por ejemplo, {plan.ejemplo} horas al mes cuestan <strong>{formatoCLP(mensualidad("otras", plan.ejemplo).monto)}</strong> con
+                otras gerencias o <strong>{formatoCLP(mensualidad("general", plan.ejemplo).monto)}</strong> con Gerente General, IVA incluido.
+              </span>
+            </>
           ) : (
             "Responde las dos preguntas y te sugerimos un plan."
           )}

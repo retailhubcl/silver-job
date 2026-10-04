@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Encabezado from "@/components/Encabezado";
+import Pie from "@/components/Pie";
 import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -26,11 +28,15 @@ export default async function EstadoPago({ params }: { params: Promise<{ estado:
   const info = ESTADOS[estado];
   if (!info) notFound();
   return (
-    <main className="simple">
-      <a className="volver" href="/">Volver a Silver Job</a>
-      <h1>{info.titulo}</h1>
-      <p>{info.texto}</p>
-      {estado === "error" && <p><a className="boton" href="/pagar">Intentar de nuevo</a></p>}
-    </main>
+    <>
+      <Encabezado enPortada={false} />
+      <main className="simple" id="contenido" tabIndex={-1}>
+        <a className="volver" href="/">Volver a Silver Job</a>
+        <h1>{info.titulo}</h1>
+        <p>{info.texto}</p>
+        {estado === "error" && <p><a className="boton" href="/pagar">Intentar de nuevo</a></p>}
+      </main>
+      <Pie />
+    </>
   );
 }

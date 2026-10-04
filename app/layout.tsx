@@ -45,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es-CL" className={`${sourceSans.variable} ${sourceSerif.variable}`}>
       <body>
+        <a className="saltar" href="#contenido">Saltar al contenido</a>
         {children}
         <Analytics />
       </body>
