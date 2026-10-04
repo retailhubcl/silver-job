@@ -1,0 +1,31 @@
+.pagina { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; color: var(--grafito); font-family: var(--fuente-sans), sans-serif; }
+.pagina h1, .pagina h2 { font-family: var(--fuente-serif), serif; margin: 0 0 12px; }
+.pagina h2 { margin-top: 32px; font-size: 1.4rem; }
+.cabecera { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.pagina label { display: flex; flex-direction: column; gap: 4px; font-size: 0.95rem; color: var(--grafito-2); }
+.pagina input, .pagina select, .pagina textarea { font: inherit; color: var(--grafito); background: var(--panel); border: 1px solid var(--linea); border-radius: 6px; padding: 10px 12px; min-height: 44px; }
+.pagina textarea { resize: vertical; line-height: 1.5; }
+.pagina button { font: inherit; font-weight: 600; min-height: 44px; padding: 0 18px; border-radius: 6px; border: 1px solid var(--noche); background: var(--noche); color: #fff; cursor: pointer; }
+.pagina button:disabled { opacity: 0.5; cursor: not-allowed; }
+.pagina button.secundario { background: transparent; color: var(--grafito); border-color: var(--linea); }
+.pagina button.peligro { background: transparent; color: var(--vino); border-color: var(--vino); }
+.login { display: grid; gap: 12px; max-width: 320px; }
+.aviso { background: var(--panel); border: 1px solid var(--linea); border-left: 4px solid var(--grafito-2); padding: 10px 14px; border-radius: 6px; }
+.estado { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.estado li { background: var(--panel); border: 1px solid var(--linea); border-radius: 999px; padding: 6px 14px; font-size: 0.9rem; }
+.estado li[data-ok="false"] { border-color: var(--vino); }
+.generar { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: end; }
+@media (min-width: 720px) { .generar { grid-template-columns: 2fr 1fr auto; } }
+.tarjeta { background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.tarjeta[data-estado="error"] { border-color: var(--vino); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; margin-bottom: 10px; }
+.etiqueta { background: var(--plata-2); border-radius: 999px; padding: 2px 10px; font-size: 0.85rem; }
+.tema { color: var(--grafito-2); font-size: 0.9rem; }
+.error { color: var(--vino); margin: 0 0 10px; }
+.cuerpo { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .cuerpo { grid-template-columns: 160px 1fr; } }
+.cuerpo img { width: 160px; height: auto; border-radius: 6px; border: 1px solid var(--linea); }
+.cuerpo form { display: grid; gap: 12px; }
+.fila { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .fila { grid-template-columns: 1fr 1fr; } }
+.acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }

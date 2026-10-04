@@ -34,8 +34,13 @@ app/
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
+  admin/redes/                Panel de redes sociales (clave ADMIN_REDES_CLAVE; noindex): generar, editar, programar y publicar
+  api/redes/imagen/[id]/route.tsx   Imagen de marca de cada publicación (.jpg para Instagram, .png para LinkedIn)
+  api/cron/redes/route.ts     Cron de lunes a viernes (vercel.json): publica lo vencido y, si se activa, repone la cola
 components/                   CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan, Pie, Simbolo
 lib/                          precios (única fuente de precios), validacion (formulario de la lista), mercadopago (API), firma (webhook), eventos
+lib/redes/                    Gestor de redes: generar (Claude + temas), almacen (Supabase), linkedin, instagram, publicar, fechas (hora de Chile), sesion
+supabase/redes.sql            Tabla `publicaciones` (se ejecuta a mano en Supabase)
 app/fuentes/                  Source Sans 3 y Source Serif 4 (woff2, subconjunto latino) con sus licencias
 app/robots.ts, sitemap.ts     robots.txt y sitemap.xml; íconos en app/icon.svg, apple-icon.png y favicon.ico
 public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg (se sirven con next/image)
@@ -52,6 +57,20 @@ Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `np
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
 | `NEXT_PUBLIC_LISTA_ENDPOINT` | Cargada en Production y Preview con el endpoint de abajo (proyecto de Apps Script vinculado a la planilla "Registros Silver Job"). Al cambiarla hay que volver a desplegar |
+
+### Gestor de redes sociales (LinkedIn e Instagram)
+
+Flujo: el tema (o la rotación de `TEMAS` en `lib/redes/generar.ts`) → Claude redacta el texto con las reglas de redacción de este documento → queda como borrador en Supabase → se revisa/edita en `/admin/redes` y se programa (día hábil, 09:00 de Chile) o se publica al tiro → el cron de las 14:00 UTC publica lo vencido. Con `REDES_AUTOGENERAR=1` el cron mantiene 3 piezas por red en cola; con `REDES_AUTOAPROBAR=1` las programa sin revisión (por defecto quedan en borrador). Sin `ANTHROPIC_API_KEY` se usa una plantilla simple.
+
+| Variable | Uso |
+|---|---|
+| `ADMIN_REDES_CLAVE`, `CRON_SECRET` | Acceso al panel y autorización del cron |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Cola de publicaciones (crear la tabla con `supabase/redes.sql`) |
+| `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | Redacción |
+| `LINKEDIN_ACCESS_TOKEN`, `LINKEDIN_AUTOR` | Posts API; el token dura ~60 días |
+| `INSTAGRAM_ACCESS_TOKEN`, `INSTAGRAM_USER_ID` | Instagram Graph API (cuenta profesional + página de Facebook) |
+
+Estado: código listo y probado en lo local (fechas, parseo, escape, sesión); **falta cargar credenciales, crear la tabla y probar contra las APIs reales**. Una cuenta por red (Silver Job). El plan Hobby de Vercel solo permite un cron diario.
 
 ---
 
