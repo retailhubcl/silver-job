@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Anillo from "@/components/Anillo";
+import Simbolo from "@/components/Simbolo";
 
 const ENLACES = [
   { href: "#pymes", largo: "Para pymes", corto: "Pymes" },
@@ -50,7 +50,7 @@ export default function Encabezado({ enPortada = true }: { enPortada?: boolean }
   return (
     <header ref={ref} className={`encabezado${oculto ? " oculto" : ""}`} onFocus={() => setOculto(false)}>
       <div className="contenedor">
-        <a className="marca" href="/" aria-label="silverjob, ir al inicio"><Anillo /><span className="palabra">silverjob</span></a>
+        <a className="marca" href="/" aria-label="Silver Job, ir al inicio"><Simbolo /><span className="palabra"><span className="palabra-silver">Silver</span> Job</span></a>
         <nav className="nav" aria-label="Principal">
           {ENLACES.map((e) => (
             <a key={e.href} href={base + e.href}>

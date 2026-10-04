@@ -30,10 +30,18 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 :focus-visible { outline: 3px solid var(--tinta); outline-offset: 3px; border-radius: 4px; }
 .contenedor { width: min(100% - 2.5rem, var(--ancho)); margin-inline: auto; }
 
-/* Logo */
-.marca { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; }
-.marca .anillo { width: 34px; height: 34px; }
-.marca .palabra { font-weight: 700; font-size: 1.45rem; letter-spacing: -.03em; line-height: 1; }
+/* Logo: símbolo «S» del encuentro + nombre en serif con «Silver» en plata */
+.simbolo { display: block; flex: none; --s-arriba: var(--grafito); --s-abajo: #6F7B87; --s-marco: #6F7B87; }
+.simbolo .s-arriba { fill: var(--s-arriba); }
+.simbolo .s-abajo { fill: var(--s-abajo); }
+.simbolo .s-marco { fill: none; stroke: var(--s-marco); stroke-width: 1.15; }
+.simbolo .s-fondo { fill: var(--noche); }
+/* Sobre fondo oscuro, y siempre en el ícono con fondo lleno */
+.encabezado .simbolo, .oscuro .fondo-simbolo .simbolo, .simbolo-lleno { --s-arriba: #F7F8FA; --s-abajo: #A9B2BC; --s-marco: #7D8894; }
+.marca { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; }
+.marca .simbolo { width: 32px; height: 32px; }
+.marca .palabra { font-family: var(--fuente-titulos); font-weight: 600; font-size: 1.6rem; letter-spacing: -.012em; line-height: 1; white-space: nowrap; }
+.encabezado .palabra-silver { color: #C9D0D7; }
 
 /* Botones */
 .boton {
@@ -49,7 +57,7 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 
 /* Zona oscura: encabezado + hero */
 .oscuro { background: var(--noche); color: var(--plata); position: relative; overflow: hidden; }
-.oscuro .fondo-anillo { position: absolute; width: 900px; height: 900px; right: -260px; top: -220px; opacity: .09; pointer-events: none; color: var(--plata); }
+.oscuro .fondo-simbolo { position: absolute; width: 900px; height: 900px; right: -260px; top: -220px; opacity: .05; pointer-events: none; color: var(--plata); }
 .encabezado { position: sticky; top: 0; z-index: 50; padding: 1rem 0; background: var(--noche); color: var(--plata); border-bottom: 1px solid rgba(237,239,241,.08); transition: transform .25s ease; }
 .encabezado .contenedor { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .nav { display: flex; align-items: center; gap: 1.75rem; font-size: 1rem; margin-left: auto; margin-right: .5rem; }
@@ -96,13 +104,13 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 .puente .frase.izq { text-align: right; }
 .puente .frase b { color: var(--noche); font-weight: 750; }
 .puente .union { width: clamp(84px, 9vw, 120px); height: clamp(84px, 9vw, 120px); color: var(--noche); }
-.puente .union .anillo { width: 100%; height: 100%; }
+.puente .union .simbolo, .oscuro .fondo-simbolo .simbolo, .puente .simbolo-enorme .simbolo { width: 100%; height: 100%; }
 .puente .cierre {
   margin: 4.5rem 0 0; text-align: center; color: var(--noche);
   font-size: min(clamp(2.6rem, 6.6vw, 5.8rem), 12vw); font-weight: 600; line-height: 1.04; letter-spacing: -.02em;
 }
 .puente .cierre, .hero h1 { text-wrap: balance; }
-.puente .anillo-enorme { position: absolute; width: 700px; height: 700px; left: -240px; bottom: -330px; opacity: .1; color: var(--noche); pointer-events: none; }
+.puente .simbolo-enorme { position: absolute; width: 700px; height: 700px; left: -240px; bottom: -330px; opacity: .07; color: var(--noche); pointer-events: none; }
 
 
 /* Foto de portada */
@@ -114,7 +122,7 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
   background: var(--panel); color: var(--grafito); border-radius: 18px; padding: .9rem 1.1rem;
   font-size: 1rem; line-height: 1.35; box-shadow: 0 24px 50px -20px rgba(0,0,0,.55);
 }
-.foto-hero figcaption .anillo { width: 36px; height: 36px; flex: none; color: var(--grafito); }
+.foto-hero figcaption .simbolo { width: 36px; height: 36px; }
 
 /* Un mes de Patricia */
 .patricia { padding: 6.5rem 0; }
@@ -304,10 +312,12 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 
 .pie { border-top: 1px solid var(--linea); padding: 2rem 0 2.5rem; font-size: 1rem; color: var(--grafito-2); }
 .pie .contenedor { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; }
-.pie .marca .anillo { width: 26px; height: 26px; }
-.pie .marca .palabra { font-size: 1.15rem; color: var(--grafito); }
+.pie .marca .simbolo { width: 28px; height: 28px; }
+.pie .marca .palabra { font-size: 1.5rem; color: var(--grafito); }
+.pie .palabra-silver { color: #6F7B87; }
 
 @media (max-width: 900px) {
+  .oscuro .fondo-simbolo, .puente .simbolo-enorme { display: none; }
   .hero .contenedor, .formulario-seccion .contenedor { grid-template-columns: minmax(0, 1fr); gap: 3rem; }
   .puente .lados-frase { grid-template-columns: 1fr; gap: 2rem; justify-items: center; text-align: center; }
   .puente .frase.izq { text-align: center; }
