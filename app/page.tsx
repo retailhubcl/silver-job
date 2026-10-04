@@ -7,13 +7,21 @@ import EnlaceRegistro from "@/components/EnlaceRegistro";
 import FormularioLista from "@/components/FormularioLista";
 import GuiaPlan from "@/components/GuiaPlan";
 import Pie from "@/components/Pie";
-import { HORAS_MAX, TRAMOS, formatoCLP, mensualidad, type IdTramo } from "@/lib/precios";
+import { HORAS_MAX, TRAMOS, formatoCLP, mensualidad, montoAnual, precioBloque, rangoMensual, type Gerencia, type IdTramo, type Tramo } from "@/lib/precios";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
 const EJEMPLO = { horas: 18, ...mensualidad("otras", 18) };
+const EJEMPLO_NETO = Math.round(EJEMPLO.monto / 1.19 / 1000) * 1000;
+const [ESTANDAR, INTENSIVO] = [TRAMOS[1], TRAMOS[2]];
+
+// Mensualidad de un tramo en palabras: "hasta $1.020.000" o "$1.045.000 a $2.470.000"
+function textoRango(g: Gerencia, t: Tramo) {
+  const { desde, hasta } = rangoMensual(g, t);
+  return t.desde === 1 ? `hasta ${formatoCLP(hasta)}` : `${formatoCLP(desde)} a ${formatoCLP(hasta)}`;
+}
 
 const USO_TRAMO: Record<IdTramo, string> = {
   basico: "Para ordenar un tema puntual o tener una segunda opinión experta.",
@@ -74,7 +82,7 @@ export default function Inicio() {
             <div className="patricia-grid">
               <figure className="mes" aria-labelledby="mes-titulo">
               <h2 id="mes-titulo">El calendario de Patricia</h2>
-              <p className="nota">Cada bloque es una mañana de trabajo de 4 horas.</p>
+              <p className="nota">Cada recuadro es una mañana de trabajo de 4 horas.</p>
               <CalendarioPatricia />
               <ul className="leyenda">
                 <li><span className="muestra" style={{ "background": "var(--vino)" }}></span><div><strong>Viña familiar</strong><span className="foco">Ordenar la operación de exportación</span></div><span className="horas">24 h</span></li>
@@ -116,11 +124,11 @@ export default function Inicio() {
             </div>
             <div className="comparacion">
               <h3>Lo que cuesta la gerencia de operaciones, a tiempo completo o por horas</h3>
-              <div className="barras" role="img" aria-label="Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. Un plan Estándar de Silver Job de 18 horas costaría cerca de 1,5 millones al mes más IVA, unos 1,8 millones con IVA.">
+              <div className="barras" role="img" aria-label={`Un gerente de operaciones a tiempo completo cuesta entre 6,7 y 9,8 millones de pesos al mes. 18 horas de Operaciones en el plan Estándar de Silver Job cuestan ${formatoCLP(EJEMPLO.monto)} al mes con IVA, unos ${formatoCLP(EJEMPLO_NETO)} más IVA.`}>
                 <div className="fila-barra"><span className="etq">Gerente a tiempo completo</span><div className="pista"><div className="barra-costo completo"></div></div><span className="monto">$6,7 a $9,8 millones al mes</span></div>
-                <div className="fila-barra"><span className="etq">Silver Job, plan Estándar de 18 horas</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Cerca de $1,5 millones + IVA al mes<small>Unos $1,8 millones con IVA</small></span></div>
+                <div className="fila-barra"><span className="etq">Silver Job, 18 horas de Operaciones</span><div className="pista"><div className="barra-costo silver"></div></div><span className="monto">Unos {formatoCLP(EJEMPLO_NETO)} + IVA al mes<small>{formatoCLP(EJEMPLO.monto)} con IVA</small></span></div>
               </div>
-              <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. El valor de Silver Job es referencial: 18 horas del plan Estándar sin IVA, con una mezcla de gerencias.</p>
+              <p className="fuente">Sueldo según la guía salarial de Robert Half para Chile. Silver Job: 18 horas de Operaciones en el plan Estándar, sin IVA para compararlo con un sueldo.</p>
             </div>
             <div className="como-funciona">
               <h3>Cómo funciona para tu pyme</h3>
@@ -137,7 +145,7 @@ export default function Inicio() {
           <div className="contenedor">
             <div className="planes-intro">
               <h2 id="planes-titulo">Planes por horas al mes</h2>
-              <p>Eliges cuántas horas de gerencia necesitas. La mensualidad incluye las horas del ejecutivo, sin cobros aparte.</p>
+              <p>Eliges cuántas horas de gerencia necesitas. Pagas una mensualidad que incluye las horas del ejecutivo: sin matrícula, comisiones ni cobros aparte.</p>
             </div>
             <ol className="regla" aria-label="Tramos de horas mensuales, de 0 a 40 horas">
               {TRAMOS.map((t) => (
@@ -148,24 +156,24 @@ export default function Inicio() {
                   <p className="rango">{t.desde === 1 ? `Hasta ${t.hasta}` : `De ${t.desde} a ${t.hasta}`} horas al mes</p>
                   <p>{USO_TRAMO[t.id]}</p>
                   <dl className="precio-hora">
-                    <div><dt>Gerente General</dt><dd>{formatoCLP(t.precioHora.general)}</dd></div>
-                    <div><dt>Otras gerencias</dt><dd>{formatoCLP(t.precioHora.otras)}</dd></div>
+                    <div><dt>Gerente General</dt><dd>{formatoCLP(t.precioHora.general)} la hora</dd><dd className="al-mes">Al mes: {textoRango("general", t)}</dd></div>
+                    <div><dt>Otras gerencias</dt><dd>{formatoCLP(t.precioHora.otras)} la hora</dd><dd className="al-mes">Al mes: {textoRango("otras", t)}</dd></div>
                   </dl>
                 </li>
               ))}
             </ol>
-            <p className="planes-precio">Precio por hora, IVA incluido. La mensualidad es el precio hora de tu tramo por las horas que contratas. Otras gerencias: Operaciones, Marketing, Finanzas y Comercial.</p>
+            <p className="planes-precio">Precios con IVA incluido. La mensualidad es el precio hora de tu plan por las horas que contratas. Otras gerencias: Operaciones, Marketing, Finanzas y Comercial. El plan {INTENSIVO.nombre} parte en {formatoCLP(rangoMensual("otras", INTENSIVO).desde)}: con {INTENSIVO.desde} horas pagas lo mismo que con {ESTANDAR.hasta}, nunca menos.</p>
             <div className="planes-ejemplo">
-              <p><span>Ejemplo</span> {EJEMPLO.horas} horas de Operaciones en el plan {EJEMPLO.tramo.nombre}: <strong>{formatoCLP(EJEMPLO.monto)} al mes</strong>, IVA incluido.</p>
+              <p><span>Ejemplo</span> {EJEMPLO.horas} horas de Operaciones en el plan {EJEMPLO.tramo.nombre}: <strong>{formatoCLP(EJEMPLO.monto)} al mes</strong>, IVA incluido. Es todo lo que pagas.</p>
               <EnlaceRegistro className="boton" tipo="pyme">Súmate con este plan</EnlaceRegistro>
             </div>
             <GuiaPlan />
             <ul className="reglas-plan">
               <li><strong>Contratas hasta el día 5</strong><span>Las horas de cada mes se contratan hasta el día 5 de ese mes.</span></li>
-              <li><strong>Horas del mes</strong><span>La bolsa de horas se usa dentro del mes contratado.</span></li>
-              <li><strong>¿Necesitas más?</strong><span>Suma bloques de 5 horas sin cambiar de plan, con un recargo de 10% sobre el precio hora de tu tramo.</span></li>
-                <li><strong>Plan anual</strong><span>Paga 12 meses por adelantado y obtén 10% de descuento.</span></li>
-              <li><strong>Un solo pago</strong><span>Pagas a Silver Job y nosotros le pagamos al ejecutivo. Al concretar el match hay un fee único de $150.000.</span></li>
+              <li><strong>Las horas no se acumulan</strong><span>Las horas se usan dentro del mes contratado. Las que no uses no pasan al mes siguiente ni se reembolsan. Puedes reagendar una sesión al mes avisando con 24 horas.</span></li>
+              <li><strong>¿Necesitas más?</strong><span>Suma bloques de 5 horas sin cambiar de plan, a 10% más que la hora de tu plan: por ejemplo, {formatoCLP(precioBloque("otras", ESTANDAR))} en el plan {ESTANDAR.nombre} con otras gerencias. Si necesitarás más horas todos los meses, te conviene subir de plan.</span></li>
+              <li><strong>Plan anual</strong><span>Paga 12 meses por adelantado y obtén 10% de descuento. Con {EJEMPLO.horas} horas de Operaciones son {formatoCLP(montoAnual(EJEMPLO.monto))} al año en vez de {formatoCLP(EJEMPLO.monto * 12)}.</span></li>
+              <li><strong>Pagas solo a Silver Job</strong><span>Sin matrícula, comisiones ni fees. Nosotros le pagamos al ejecutivo por las horas trabajadas.</span></li>
             </ul>
           </div>
         </section>
@@ -179,7 +187,7 @@ export default function Inicio() {
                 <h2 id="ejecutivos-titulo">Tu trayectoria, donde más se necesita</h2>
                 <p>Trabaja por horas con varias pymes a la vez y arma tu propia cartera de clientes, con proyectos donde tu trayectoria marca la diferencia desde el primer día.</p>
                 <EnlaceRegistro className="boton plata" tipo="ejecutivo">Súmate como ejecutivo</EnlaceRegistro>
-                <p className="costo-ejecutivo">Crear tu perfil es gratis. Solo pagas un fee único cuando se concreta un match con una pyme.</p>
+                <p className="costo-ejecutivo">Sumarte es gratis, sin fees ni comisiones: recibes el valor hora acordado por cada hora trabajada.</p>
               </div>
               <ul className="beneficios">
                 <li><h3>Haz lo que mejor sabes</h3><p>Proyectos concretos donde décadas de gestión son exactamente lo que se necesita.</p></li>
@@ -218,8 +226,8 @@ export default function Inicio() {
               <details><summary>¿Quién responde por el trabajo del ejecutivo?</summary><p>El alcance y los entregables se acuerdan directamente entre la pyme y el ejecutivo, y son responsabilidad de ambos. Silver Job los conecta, coordina la agenda y administra los pagos.</p></details>
               <details><summary>¿Qué pasa si no uso todas mis horas?</summary><p>Las horas de cada plan se usan dentro del mes contratado. Puedes reagendar una sesión al mes avisando con 24 horas de anticipación. Si es el ejecutivo quien cancela, esa hora queda como crédito para el mes siguiente.</p></details>
               <details><summary>¿Cómo validan a los ejecutivos?</summary><p>Revisamos la trayectoria de cada ejecutivo antes de presentarlo. Después, las pymes evalúan su trabajo con lingotes de uno a cinco, y los mejor evaluados obtienen el sello Plata certificada.</p></details>
-              <details><summary>¿Cómo se paga?</summary><p>La pyme paga una mensualidad a Silver Job que ya incluye las horas del ejecutivo. Silver Job le paga al ejecutivo a fin de mes por las horas trabajadas. Al concretarse un match se cobra un fee único a cada parte.</p></details>
-              <details><summary>¿Cuánto cuesta sumarme como ejecutivo?</summary><p>Crear tu perfil es gratis. Solo pagas un fee único cuando se concreta un match con una pyme.</p></details>
+              <details><summary>¿Cómo se paga?</summary><p>La pyme paga por adelantado una mensualidad a Silver Job, con IVA incluido, que ya incluye las horas del ejecutivo. No hay matrícula, comisiones ni otros cobros. Silver Job le paga al ejecutivo a fin de mes por las horas trabajadas.</p></details>
+              <details><summary>¿Cuánto cuesta sumarme como ejecutivo?</summary><p>Nada. Crear tu perfil es gratis y no hay fees ni comisiones que se descuenten de tu pago: Silver Job te paga el valor hora acordado por cada hora trabajada.</p></details>
               <details><summary>¿Es confidencial lo que comparto?</summary><p>La agenda de Silver Job registra solo fechas y horarios, no el contenido de las sesiones. La información que la pyme comparte con el ejecutivo queda entre ellos.</p></details>
             </div>
           </div>

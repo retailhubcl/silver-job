@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  DESCUENTO_ANUAL, FEE_MATCH_PYME, GERENCIAS, HORAS_MAX, TRAMOS,
+  DESCUENTO_ANUAL, GERENCIAS, HORAS_MAX, TRAMOS,
   cotizarBloques, cotizarPlan, esHorasValidas, formatoCLP, type Gerencia, type Modalidad,
 } from "@/lib/precios";
 
@@ -48,10 +48,9 @@ export function CotizadorPlan({ horasIniciales }: { horasIniciales: number }) {
   const [gerencia, setGerencia] = useState<Gerencia>("otras");
   const [horasTexto, setHorasTexto] = useState(String(horasIniciales));
   const [modalidad, setModalidad] = useState<Modalidad>("mensual");
-  const [primera, setPrimera] = useState(true);
   const horas = Number(horasTexto);
   const valida = esHorasValidas(horas);
-  const cotizacion = valida ? cotizarPlan({ gerencia, horas, modalidad, primeraContratacion: primera }) : null;
+  const cotizacion = valida ? cotizarPlan({ gerencia, horas, modalidad }) : null;
 
   return (
     <form method="post" action="/api/checkout">
@@ -73,10 +72,6 @@ export function CotizadorPlan({ horasIniciales }: { horasIniciales: number }) {
         <label><input type="radio" name="modalidad" value="mensual" checked={modalidad === "mensual"} onChange={() => setModalidad("mensual")} /> Mensual</label>
         <label><input type="radio" name="modalidad" value="anual" checked={modalidad === "anual"} onChange={() => setModalidad("anual")} /> Anual, 12 meses pagados por adelantado con {DESCUENTO_ANUAL * 100}% de descuento</label>
       </fieldset>
-      <label className="consentimiento">
-        <input type="checkbox" name="primera" value="si" checked={primera} onChange={(e) => setPrimera(e.target.checked)} />
-        <span>Es mi primera contratación con Silver Job (incluye el fee de match de {formatoCLP(FEE_MATCH_PYME)}, pago único)</span>
-      </label>
       {cotizacion ? (
         <Resumen
           lineas={cotizacion.lineas}
@@ -117,7 +112,7 @@ export function CotizadorBloques() {
           </select>
         </label>
       </div>
-      <Resumen lineas={cotizacion.lineas} total={cotizacion.total} nota="Las horas adicionales tienen un recargo de 10% sobre el precio hora de tu plan y se usan dentro del mismo mes." />
+      <Resumen lineas={cotizacion.lineas} total={cotizacion.total} nota="Las horas adicionales cuestan 10% más que la hora de tu plan y se usan dentro del mismo mes. Si necesitas más horas todos los meses, te conviene subir de plan." />
       <DatosComprador />
       <button className="boton" type="submit">Pagar con Mercado Pago</button>
     </form>

@@ -18,7 +18,7 @@ npm run build
 | --- | --- |
 | `/` | Landing. El formulario envía a la planilla de Google (Apps Script). |
 | `/privacidad` | Política de privacidad (`/privacidad.html` redirige aquí). |
-| `/pagar` | Cotiza y paga un plan (gerencia × horas, mensual o anual, fee de match). `/pagar?tipo=bloque` vende bloques de 5 h. Cerrada sin `MERCADOPAGO_ACCESS_TOKEN`. |
+| `/pagar` | Cotiza y paga un plan (gerencia × horas, mensual o anual, sin cobros aparte). `/pagar?tipo=bloque` vende bloques de 5 h. Cerrada sin `MERCADOPAGO_ACCESS_TOKEN`. |
 | `/api/checkout` | Recalcula el monto en el servidor, crea la preferencia de Checkout Pro y redirige. |
 | `/api/webhooks/mercadopago` | Valida la firma `x-signature` y consulta el pago en la API. |
 | `/pago/exito`, `/pago/pendiente`, `/pago/error` | Páginas de vuelta desde Mercado Pago. |

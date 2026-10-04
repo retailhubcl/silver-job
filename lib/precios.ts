@@ -28,8 +28,6 @@ export const HORAS_MAX = 40;
 export const HORAS_BLOQUE = 5;
 export const RECARGO_BLOQUE = 0.1;
 export const DESCUENTO_ANUAL = 0.1;
-export const FEE_MATCH_PYME = 150_000;
-export const FEE_MATCH_EJECUTIVO = 50_000;
 
 export const redondeo500 = (n: number) => Math.round(n / 500) * 500;
 
@@ -50,6 +48,16 @@ export function mensualidad(gerencia: Gerencia, horas: number) {
   const anterior = TRAMOS[TRAMOS.indexOf(tramo) - 1];
   const piso = anterior ? anterior.hasta * anterior.precioHora[gerencia] : 0;
   return { tramo, monto: Math.max(calculado, piso), pisoAplicado: piso > calculado };
+}
+
+// Rango de la mensualidad de un tramo (el mínimo incluye el piso)
+export function rangoMensual(gerencia: Gerencia, tramo: Tramo) {
+  return { desde: mensualidad(gerencia, tramo.desde).monto, hasta: mensualidad(gerencia, tramo.hasta).monto };
+}
+
+// 12 mensualidades pagadas por adelantado, con descuento
+export function montoAnual(mensual: number) {
+  return Math.round(mensual * 12 * (1 - DESCUENTO_ANUAL));
 }
 
 export function precioBloque(gerencia: Gerencia, tramo: Tramo) {
@@ -73,20 +81,17 @@ export function cotizarPlan({
   gerencia,
   horas,
   modalidad,
-  primeraContratacion,
 }: {
   gerencia: Gerencia;
   horas: number;
   modalidad: Modalidad;
-  primeraContratacion: boolean;
 }): Cotizacion & { tramo: Tramo; pisoAplicado: boolean } {
   const { tramo, monto, pisoAplicado } = mensualidad(gerencia, horas);
   const base = `Plan ${tramo.nombre}, ${horas} h al mes de ${nombreGerencia(gerencia)}`;
   const lineas: Linea[] =
     modalidad === "anual"
-      ? [{ id: `anual-${tramo.id}`, concepto: `${base}, anual (12 meses, 10% de descuento)`, monto: Math.round(monto * 12 * (1 - DESCUENTO_ANUAL)) }]
+      ? [{ id: `anual-${tramo.id}`, concepto: `${base}, anual (12 meses, 10% de descuento)`, monto: montoAnual(monto) }]
       : [{ id: `mensual-${tramo.id}`, concepto: `${base}, mensual`, monto }];
-  if (primeraContratacion) lineas.push({ id: "fee-match", concepto: "Fee de match (pago único)", monto: FEE_MATCH_PYME });
   return { lineas, total: lineas.reduce((s, l) => s + l.monto, 0), tramo, pisoAplicado };
 }
 

@@ -30,9 +30,8 @@ export async function POST(request: Request) {
     const horas = Number(texto("horas"));
     if (!esHorasValidas(horas)) return volver("plan");
     const modalidad = texto("modalidad") === "anual" ? "anual" : "mensual";
-    const primeraContratacion = texto("primera") === "si";
-    cotizacion = cotizarPlan({ gerencia, horas, modalidad, primeraContratacion });
-    metadata = { tipo, gerencia, horas, modalidad, primera: primeraContratacion };
+    cotizacion = cotizarPlan({ gerencia, horas, modalidad });
+    metadata = { tipo, gerencia, horas, modalidad };
   }
 
   try {

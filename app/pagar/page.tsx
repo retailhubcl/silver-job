@@ -37,7 +37,7 @@ export default async function Pagar({ searchParams }: { searchParams: Promise<{ 
             <p>
               {bloques
                 ? "Compra bloques de 5 horas para usar este mes, sin cambiar de plan."
-                : "Eliges la gerencia y las horas del mes, y pagas por adelantado con Mercado Pago. La mensualidad incluye las horas del ejecutivo."}
+                : "Eliges la gerencia y las horas del mes, y pagas por adelantado con Mercado Pago. La mensualidad incluye las horas del ejecutivo, sin matrícula, comisiones ni otros cobros."}
             </p>
             <p className="pago-nota">
               Las horas de cada mes se contratan hasta el día 5 de ese mes y se usan dentro del mes contratado. Todos los precios incluyen IVA.

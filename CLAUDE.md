@@ -64,8 +64,8 @@ Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `np
 3. **Puente** (fondo plateado): "Hay pymes que crecieron más rápido que su equipo de gestión. Y ejecutivos con décadas de experiencia, listos para su próximo desafío. Silver Job junta a los dos."
 4. **Caso Patricia**: calendario de un mes con sus tres pymes (viña, panadería, transportes). Rotulado como caso ilustrativo.
 5. **Para pymes** (`#pymes`): beneficios (incluye "Perfiles validados y evaluados" con mención al sello Plata certificada), **comparación de costo** con barras (gerente full time $6,7–9,8 MM/mes según guía salarial Robert Half Chile vs. plan Estándar de 18 h ≈ $1,5 MM/mes, rotulado como estimación referencial) y "Cómo funciona" en 3 pasos.
-6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Muestra el precio hora con IVA por tramo y gerencia, tomado de `lib/precios.ts`. **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Reglas: contratación hasta el día 5, horas del mes, bloques adicionales, un solo pago.
-7. **Para ejecutivos** (`#ejecutivos`): diagramación invertida respecto de pymes, viñetas con forma de lingote, nota "Crear tu perfil es gratis. Solo pagas un fee único cuando se concreta un match". Bloque **Plata certificada** con lingote grande y ejemplo de nota 4,8 (el quinto lingote lleno al 80%). "Cómo funciona" en 3 pasos (incluye agenda).
+6. **Planes** (`#planes`): los tres tramos dibujados como una regla de 0 a 40 h, con barras proporcionales en tonos plata. Muestra el precio hora con IVA por tramo y gerencia, tomado de `lib/precios.ts`. **Guía "¿Qué plan necesitas?"**: 2 preguntas con radios que sugieren un tramo, lo marcan como "Sugerido" y lo preseleccionan en el formulario. Cada tramo muestra el precio hora y el rango de la mensualidad ("Al mes: …", calculado con `rangoMensual`). Reglas: contratación hasta el día 5, las horas no se acumulan, bloques adicionales con precio de ejemplo y aviso de subir de plan, plan anual con ejemplo, pagas solo a Silver Job (sin matrícula, comisiones ni fees).
+7. **Para ejecutivos** (`#ejecutivos`): diagramación invertida respecto de pymes, viñetas con forma de lingote, nota "Sumarte es gratis, sin fees ni comisiones: recibes el valor hora acordado por cada hora trabajada". Bloque **Plata certificada** con lingote grande y ejemplo de nota 4,8 (el quinto lingote lleno al 80%). "Cómo funciona" en 3 pasos (incluye agenda).
 8. **Preguntas frecuentes** (`#preguntas`): acordeón con `<details>`: responsabilidad del trabajo, horas no usadas, validación, pagos, costo para ejecutivos, confidencialidad.
 9. **Formulario** (`#lista`): selector Soy pyme / Soy ejecutivo, casilla de consentimiento obligatoria con enlace a privacidad, confirmación con botones para compartir por WhatsApp y copiar el enlace.
 10. **Pie**: frase "quiénes somos", tomas@silverjob.cl, política de privacidad, © 2026.
@@ -131,7 +131,7 @@ Principios: la plata es el color protagonista; vino, trigo y tinta quedan solo p
 
 - Pago único mensual **todo incluido**: cubre el margen de la plataforma y el pago al ejecutivo.
 - Opción de plan anual.
-- **Fee de match**: cobro único al concretarse la conexión, a **ambas partes** por separado (montos distintos para pyme y ejecutivo).
+- **Sin fees** (decidido el 4/10/2026): no hay fee de match ni otros cobros, ni para la pyme ni para el ejecutivo. El ingreso de Silver Job es solo el margen incluido en el precio hora.
 - **Horas incrementales**: bloques de 5 h con recargo de 10% sobre el precio hora del tramo.
 
 ### Precios (definidos, octubre de 2026)
@@ -158,8 +158,9 @@ Por el redondeo, los márgenes reales de otras gerencias quedan en 24,8% (Están
 | Intensivo | $612.500 | $492.500 |
 
 - **Plan anual**: pago adelantado de 12 mensualidades con 10% de descuento, en un solo cobro. Las horas de cada mes se siguen consumiendo dentro de ese mes. Ejemplo: 18 h al mes de Operaciones = $1.710.000 × 12 × 0,9 = $18.468.000.
-- **Fee de match** (IVA incluido): **$150.000 a la pyme**, cobrado con Mercado Pago; **$50.000 al ejecutivo**, descontado de su primera liquidación.
-- **Comparación de costo del sitio**: se mantiene "cerca de $1,5 millones" (18 h del plan Estándar con el mix 30/70 = $1.545.882 netos).
+- **Fee de match: eliminado** (4/10/2026). Antes eran $150.000 a la pyme y $50.000 al ejecutivo. Se evaluó reemplazarlo por una comisión de 15% del precio, pero bajaba el ingreso de Silver Job cerca de 42% (18 h de otras gerencias por 12 meses: $2,59 MM netos frente a $4,45 MM). Con los precios actuales y sin fees, el ingreso baja ~4% por cliente anual (~14% si el cliente se queda 3 meses), y el margen sigue siendo 20–30% del precio neto.
+- **Mensualidad por tramo** (con IVA): Básico hasta $1.275.000 (GG) / $1.020.000 (otras); Estándar $1.309.000–$3.094.000 / $1.045.000–$2.470.000; Intensivo $3.094.000–$4.460.000 / $2.470.000–$3.580.000.
+- **Comparación de costo del sitio**: 18 h de Operaciones en el plan Estándar, $1.710.000 con IVA (unos $1.437.000 netos, para comparar con un sueldo). Antes decía "cerca de $1,5 millones" con una mezcla de gerencias, que no cuadraba con el ejemplo de Planes.
 
 ### Valores hora de referencia (lo que recibe el ejecutivo)
 
@@ -170,7 +171,7 @@ Por el redondeo, los márgenes reales de otras gerencias quedan en 24,8% (Están
 
 - Todo pasa por la plataforma; nunca hay pagos directos entre pyme y ejecutivo.
 - La pyme paga por adelantado al contratar.
-- Silver Job liquida al ejecutivo **a fin de mes** por las horas efectivamente trabajadas (registradas como "realizadas" en la agenda), descontando su margen. El ejecutivo emite boleta de honorarios por el monto liquidado.
+- Silver Job liquida al ejecutivo **a fin de mes** por las horas efectivamente trabajadas (registradas como "realizadas" en la agenda), sin descuentos: recibe su valor hora completo (el margen de Silver Job ya está en el precio que paga la pyme). El ejecutivo emite boleta de honorarios por el monto liquidado.
 
 ### Reglas de operación
 
@@ -205,7 +206,7 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 - Margen de la plataforma sobre el valor hora: Básico 30%, Estándar 25%, Intensivo 20%.
 - Horas promedio contratadas: Básico 8, Estándar 18, Intensivo 33.
 - Mix de demanda: 30% Gerente General, 70% otras gerencias (valor hora ponderado ≈ $64.500).
-- Fee de match: $150.000 a la pyme y $50.000 al ejecutivo.
+- Fee de match: $150.000 a la pyme y $50.000 al ejecutivo (eliminado el 4/10/2026; la planilla aún lo considera).
 - Recargo de horas incrementales: 12,5%. Descuento del plan anual: 10%.
 - Comisión de la pasarela de pago: 3%. Costos fijos: $1,5 MM al mes. Capacidad: 60 h por ejecutivo al mes.
 - Resultado con estos supuestos: plan Estándar ≈ $1,45 MM al mes; punto de equilibrio ≈ 7 pymes activas.
@@ -225,11 +226,12 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 1. ~~Publicar el Apps Script~~ Hecho el 1/10/2026: `apps-script/lista-espera.gs` publicado en el proyecto vinculado a la planilla; el sitio usa su URL (`NEXT_PUBLIC_LISTA_ENDPOINT`).
 2. ~~Activar Web Analytics~~ Hecho el 1/10/2026 (visitas; los eventos requieren plan Pro).
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
-4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo. El fee de match se suma al primer pago según lo que declara la pyme (casilla "primera contratación"); Silver Job lo verifica a mano hasta que exista una base de datos.
+4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**
-- Descontar el fee de match del ejecutivo en su primera liquidación (proceso de liquidaciones aún no construido).
+- Actualizar la planilla de pricing sin el fee de match.
+- Validar con el contador el tratamiento del IVA: si el ejecutivo emite boleta de honorarios y Silver Job cobra por mandato, el IVA podría aplicar solo al margen.
 - Revisión legal de los términos y de la política de privacidad.
 
 **Mejoras de UX:** ver la sección 7.
@@ -283,6 +285,22 @@ Veredicto: 5,5/10 en experiencia centrada en el cliente. Técnica de primer nive
 
 **Etapa 1 (código, hecha):** enlace "Saltar al contenido" y hero dentro de `main`; el desplazamiento reserva el alto real del encabezado (variable `--alto-encabezado`), así el foco no queda tapado (WCAG 2.4.11); títulos y menú que soportan el texto del sistema al 200 % y textos de lectura de 16 px como mínimo; validación propia del formulario (`lib/validacion.ts`, mensajes bajo cada campo, correo con dominio); página 404 en español; encabezado y pie (`components/Pie.tsx`) en las páginas internas; costo estimado en la guía de plan; cifra con IVA en la comparación; rótulo "Caso ilustrativo" en el caso de Patricia.
 
-**Etapa 2 (espera decisiones de Tomás):** fecha de apertura o estado, WhatsApp y agenda, quiénes somos y datos de la empresa, términos y condiciones con aceptación en `/pagar`, preguntas frecuentes a ~12, ingreso y fee del ejecutivo, jerga ("fee de match"), correo de confirmación.
+**Etapa 2 (espera decisiones de Tomás):** fecha de apertura o estado, WhatsApp y agenda, quiénes somos y datos de la empresa, términos y condiciones con aceptación en `/pagar`, preguntas frecuentes a ~12, ingreso del ejecutivo (el fee ya se eliminó), correo de confirmación.
 
 **Etapa 3:** páginas `/pymes` y `/ejecutivos`, reordenar la página de pymes, prueba social real, medición y pruebas con usuarios.
+
+---
+
+## 9. Auditoría de claridad de precios (4 de octubre de 2026)
+
+Resultado: la fórmula se entendía, pero no "cuánto pago al mes", "qué incluye" ni "a qué me comprometo", y había contradicciones a la vista.
+
+**Hecho:** se eliminaron los fees (contradecían "sin cobros aparte"); la comparación usa 18 h de Operaciones ($1.710.000 con IVA, unos $1.437.000 netos) en vez de "cerca de $1,5 millones"; el calendario de Patricia dice "recuadro" para no chocar con los "bloques de 5 h"; "Un solo pago" pasó a "Pagas solo a Silver Job"; cada tramo muestra el rango de la mensualidad; los bloques muestran un precio de ejemplo y el aviso de que conviene subir de plan si se repiten; se explica que 27 h cuestan lo mismo que 26 h; "las horas no se acumulan" se dice directo; el plan anual tiene un ejemplo en pesos.
+
+**Pendiente de decisiones de Tomás** (para un bloque "Cómo se cobra" en preguntas frecuentes):
+1. ¿Se pueden combinar gerencias y sumar sus horas para el tramo?
+2. ¿Qué incluye una hora (preparación, presencial o en línea, traslados, entregables)?
+3. ¿Permanencia mínima y cómo se cancela (mensual y anual)?
+4. ¿Factura electrónica para la pyme? ¿Mostrar también el neto?
+5. ¿Qué pasa si una pyme llega después del día 5 (espera o proporcional)?
+6. ¿Mínimo de horas (por ejemplo, 4 h)? Hoy se puede contratar 1 h.

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  TRAMOS, cotizarBloques, cotizarPlan, mensualidad, precioBloque, redondeo500, tramoDe, esHorasValidas,
+  TRAMOS, cotizarBloques, cotizarPlan, mensualidad, precioBloque, rangoMensual, redondeo500, tramoDe, esHorasValidas,
 } from "./precios.ts";
 
 test("precio hora sale de la fórmula de CLAUDE.md", () => {
@@ -50,10 +50,22 @@ test("bloques de 5 h", () => {
   assert.equal(cotizarBloques({ gerencia: "otras", tramo: TRAMOS[1], cantidad: 2 }).total, 1_045_000);
 });
 
-test("plan anual y fee de match", () => {
-  const anual = cotizarPlan({ gerencia: "otras", horas: 18, modalidad: "anual", primeraContratacion: false });
+test("plan anual, sin cobros aparte", () => {
+  const anual = cotizarPlan({ gerencia: "otras", horas: 18, modalidad: "anual" });
   assert.equal(anual.total, 18_468_000);
-  const primera = cotizarPlan({ gerencia: "otras", horas: 18, modalidad: "mensual", primeraContratacion: true });
-  assert.deepEqual(primera.lineas.map((l) => l.monto), [1_710_000, 150_000]);
-  assert.equal(primera.total, 1_860_000);
+  const mensual = cotizarPlan({ gerencia: "otras", horas: 18, modalidad: "mensual" });
+  assert.deepEqual(mensual.lineas.map((l) => l.monto), [1_710_000]);
+  assert.equal(mensual.total, 1_710_000);
+});
+
+test("rango mensual de cada tramo", () => {
+  const esperados = {
+    basico: [[127_500, 1_275_000], [102_000, 1_020_000]],
+    estandar: [[1_309_000, 3_094_000], [1_045_000, 2_470_000]],
+    intensivo: [[3_094_000, 4_460_000], [2_470_000, 3_580_000]],
+  };
+  for (const t of TRAMOS) {
+    const [g, o] = [rangoMensual("general", t), rangoMensual("otras", t)];
+    assert.deepEqual([[g.desde, g.hasta], [o.desde, o.hasta]], esperados[t.id], t.id);
+  }
 });
