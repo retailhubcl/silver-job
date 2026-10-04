@@ -197,19 +197,15 @@ Los entregables del trabajo son **responsabilidad exclusiva de las partes** que 
 
 ---
 
-## 4. Supuestos de la planilla de pricing
+## 4. Planilla de pricing
 
-Los precios definidos están en la sección 3. Esta planilla queda como referencia para escenarios (mix, horas promedio, punto de equilibrio).
+Archivo vigente: **`silver-job-modelo-pricing-v2.xlsx`** en la carpeta de Silver Job en Google Drive ([abrir](https://drive.google.com/file/d/12Yy-kdWHq6mpjyp27nuHWEV7by4OYlPI/view)), del 4/10/2026, **sin fee de match**. Reemplaza a `silver-job-modelo-pricing.xlsx` (v1, con fee, que no está en Drive). Pestañas:
 
-Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenarios). Las celdas amarillas son editables. **Estos montos son propuestas, no decisiones**:
+- **Supuestos**: celdas amarillas editables. Incluye los valores hora, el IVA, el redondeo, el recargo de bloques (10%), el descuento anual, los tramos con su margen y horas promedio, la comisión de la pasarela (3%), los costos fijos ($1,5 MM al mes), la capacidad (60 h por ejecutivo), el mix (30% Gerente General) y dos supuestos nuevos: el % de pymes por tramo (30/50/20) y la permanencia promedio (12 meses).
+- **Precios**: precio hora con y sin IVA, margen real, mensualidad mínima (con piso) y máxima, y bloque de 5 h por tramo y gerencia, todo con fórmulas. Reproduce los precios del sitio y el ejemplo de 18 h ($1.710.000 al mes, $18.468.000 al año).
+- **Escenarios**: cobro, pago a ejecutivos, comisión de la pasarela y contribución de una pyme típica de cada tramo; punto de equilibrio (~5 pymes activas con la distribución 30/50/20, 2 ejecutivos); y el impacto de quitar el fee (~4% de la contribución de una pyme en 12 meses).
 
-- Margen de la plataforma sobre el valor hora: Básico 30%, Estándar 25%, Intensivo 20%.
-- Horas promedio contratadas: Básico 8, Estándar 18, Intensivo 33.
-- Mix de demanda: 30% Gerente General, 70% otras gerencias (valor hora ponderado ≈ $64.500).
-- Fee de match: $150.000 a la pyme y $50.000 al ejecutivo (eliminado el 4/10/2026; la planilla aún lo considera).
-- Recargo de horas incrementales: 12,5%. Descuento del plan anual: 10%.
-- Comisión de la pasarela de pago: 3%. Costos fijos: $1,5 MM al mes. Capacidad: 60 h por ejecutivo al mes.
-- Resultado con estos supuestos: plan Estándar ≈ $1,45 MM al mes; punto de equilibrio ≈ 7 pymes activas.
+El resultado de Estándar coincide con la v1 (cobro neto $1.545.882 con el mix 30/70). El punto de equilibrio baja de ~7 pymes (v1) a ~5 porque la v2 usa los precios definidos y la distribución por tramo; la v1 tenía supuestos anteriores (recargo de 12,5%, otros precios).
 
 ---
 
@@ -230,7 +226,6 @@ Archivo: `silver-job-modelo-pricing.xlsx` (pestañas Supuestos, Precios, Escenar
 5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
 
 **Negocio:**
-- Actualizar la planilla de pricing sin el fee de match.
 - Validar con el contador el tratamiento del IVA: si el ejecutivo emite boleta de honorarios y Silver Job cobra por mandato, el IVA podría aplicar solo al margen.
 - Revisión legal de los términos y de la política de privacidad.
 
