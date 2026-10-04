@@ -219,7 +219,7 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 .planes-intro { max-width: 40rem; margin-bottom: 3.5rem; }
 .planes-intro h2 { font-size: min(11vw, clamp(2.2rem, 4vw, 3.2rem)); font-weight: 600; letter-spacing: -.015em; line-height: 1.08; margin: 0 0 1rem; text-wrap: balance; }
 .planes-intro p { color: var(--grafito-2); margin: 0; max-width: 48ch; }
-.regla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 10fr 16fr 14fr; gap: 8px; }
+.regla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .tramo { padding-right: 1.5rem; display: flex; flex-direction: column; }
 .tramo .barra { height: 18px; border-radius: 9px; margin-bottom: .6rem; }
 .tramo:nth-child(1) .barra { background: #D5DAE0; }
@@ -235,10 +235,28 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 .precio-hora dd { margin: 0; font-weight: 650; color: var(--grafito); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .precio-hora .al-mes { grid-column: 1 / -1; font-weight: 400; font-size: .95rem; color: var(--grafito-2); white-space: normal; }
 .planes-precio { margin: 2rem 0 0; font-size: 1rem; color: var(--grafito-2); }
-.planes-ejemplo { margin-top: 1.5rem; padding: 1.25rem 1.5rem; background: var(--panel); border: 1px solid var(--linea); border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 1rem 2rem; flex-wrap: wrap; }
-.planes-ejemplo p { margin: 0; max-width: 52ch; }
-.planes-ejemplo strong { white-space: nowrap; }
-.planes-ejemplo p span { display: block; font-size: .85rem; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--grafito-2); margin-bottom: .2rem; }
+.simulador { margin-top: 1.5rem; padding: 2rem; background: var(--panel); border: 1px solid var(--linea); border-radius: 20px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1.5rem 3rem; }
+.simulador h3 { grid-column: 1 / -1; font-size: 1.5rem; font-weight: 600; margin: 0; }
+.simulador-controles { display: grid; gap: 1.25rem; align-content: start; }
+.sim-campo { border: 0; margin: 0; padding: 0; display: grid; gap: .4rem; min-width: 0; }
+.sim-campo > label, .sim-campo legend { font-weight: 650; padding: 0; }
+.sim-campo select { font: inherit; padding: .6rem .75rem; border: 1px solid var(--linea); border-radius: 10px; background: #fff; color: var(--grafito); max-width: 20rem; }
+.sim-campo fieldset label, fieldset.sim-campo label { display: flex; gap: .65rem; align-items: center; padding: .2rem 0; cursor: pointer; }
+fieldset.sim-campo input[type=radio] { width: 1.1rem; height: 1.1rem; accent-color: var(--noche); margin: 0; }
+.sim-horas { display: flex; align-items: center; gap: .6rem; }
+.sim-horas input[type=range] { flex: 1; min-width: 0; accent-color: var(--noche); height: 1.5rem; }
+.sim-horas button { width: 2.5rem; height: 2.5rem; flex: none; border-radius: 50%; border: 1px solid var(--linea); background: #fff; color: var(--noche); font: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.sim-horas button:disabled { opacity: .4; cursor: default; }
+.sim-horas output { min-width: 3.2rem; text-align: right; font-weight: 650; font-variant-numeric: tabular-nums; }
+.sim-ayuda { margin: 0; font-size: 1rem; color: var(--grafito-2); }
+.simulador-resultado { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem; }
+.simulador-resultado p { margin: 0; }
+.sim-plan { font-weight: 650; color: var(--grafito-2); }
+.sim-total { margin-top: .35rem !important; font-size: 1.15rem; }
+.sim-total strong { display: block; font-family: var(--fuente-titulos); font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 600; color: var(--noche); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.sim-total small { display: block; font-size: 1rem; color: var(--grafito-2); margin-top: .25rem; }
+.sim-nota { margin-top: .5rem !important; font-size: 1rem; color: var(--grafito-2); }
+.sim-accion .boton { align-self: flex-start; }
 .reglas-plan { list-style: none; margin: 4rem 0 0; padding: 2rem 0 0; border-top: 1px solid var(--linea); display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 3rem; }
 .reglas-plan li { max-width: 46ch; }
 .reglas-plan strong { display: block; font-weight: 650; margin-bottom: .2rem; }
@@ -335,7 +353,6 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
   .nav .texto-largo { display: none; }
   .nav .texto-corto { display: inline; }
   .regla { grid-template-columns: minmax(0, 1fr); gap: 2.25rem; }
-  .tramo .barra { width: var(--w); }
   .tramo .tope { text-align: left; }
   .reglas-plan { grid-template-columns: 1fr; }
   .sello { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.75rem; }
@@ -343,6 +360,7 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
   .nota-lingotes .fila { justify-content: flex-start; }
   .fila-barra { grid-template-columns: 1fr; gap: .4rem; }
   .guia { grid-template-columns: 1fr; padding: 1.5rem; }
+  .simulador { grid-template-columns: minmax(0, 1fr); padding: 1.5rem; }
   .pie-enlaces { align-items: flex-start; }
 }
 @media (max-width: 520px) {

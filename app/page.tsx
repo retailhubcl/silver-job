@@ -7,7 +7,9 @@ import EnlaceRegistro from "@/components/EnlaceRegistro";
 import FormularioLista from "@/components/FormularioLista";
 import GuiaPlan from "@/components/GuiaPlan";
 import Pie from "@/components/Pie";
-import { HORAS_MAX, TRAMOS, formatoCLP, mensualidad, montoAnual, precioBloque, rangoMensual, type Gerencia, type IdTramo, type Tramo } from "@/lib/precios";
+import SimuladorPlan from "@/components/SimuladorPlan";
+import { pagosHabilitados } from "@/lib/mercadopago";
+import { TRAMOS, formatoCLP, mensualidad, montoAnual, precioBloque, rangoMensual, type Gerencia, type IdTramo, type Tramo } from "@/lib/precios";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 
 const EJEMPLO = { horas: 18, ...mensualidad("otras", 18) };
 const EJEMPLO_NETO = Math.round(EJEMPLO.monto / 1.19 / 1000) * 1000;
-const [ESTANDAR, INTENSIVO] = [TRAMOS[1], TRAMOS[2]];
+const ESTANDAR = TRAMOS[1];
 
 // Mensualidad de un tramo en palabras: "hasta $1.020.000" o "$1.045.000 a $2.470.000"
 function textoRango(g: Gerencia, t: Tramo) {
@@ -149,7 +151,7 @@ export default function Inicio() {
             </div>
             <ol className="regla" aria-label="Tramos de horas mensuales, de 0 a 40 horas">
               {TRAMOS.map((t) => (
-                <li key={t.id} className="tramo" style={{ "--w": `${(t.hasta / HORAS_MAX) * 100}%` } as React.CSSProperties}>
+                <li key={t.id} className="tramo">
                   <div className="barra"></div>
                   <span className="tope">{t.hasta} h</span>
                   <h3>{t.nombre}</h3>
@@ -162,11 +164,8 @@ export default function Inicio() {
                 </li>
               ))}
             </ol>
-            <p className="planes-precio">Precios con IVA incluido. La mensualidad es el precio hora de tu plan por las horas que contratas. Otras gerencias: Operaciones, Marketing, Finanzas y Comercial. El plan {INTENSIVO.nombre} parte en {formatoCLP(rangoMensual("otras", INTENSIVO).desde)}: con {INTENSIVO.desde} horas pagas lo mismo que con {ESTANDAR.hasta}, nunca menos.</p>
-            <div className="planes-ejemplo">
-              <p><span>Ejemplo</span> {EJEMPLO.horas} horas de Operaciones en el plan {EJEMPLO.tramo.nombre}: <strong>{formatoCLP(EJEMPLO.monto)} al mes</strong>, IVA incluido. Es todo lo que pagas.</p>
-              <EnlaceRegistro className="boton" tipo="pyme">Súmate con este plan</EnlaceRegistro>
-            </div>
+            <p className="planes-precio">Precios con IVA incluido.</p>
+            <SimuladorPlan pagosAbiertos={pagosHabilitados()} />
             <GuiaPlan />
             <ul className="reglas-plan">
               <li><strong>Contratas hasta el día 5</strong><span>Las horas de cada mes se contratan hasta el día 5 de ese mes.</span></li>

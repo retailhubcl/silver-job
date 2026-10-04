@@ -44,10 +44,18 @@ function DatosComprador() {
   );
 }
 
-export function CotizadorPlan({ horasIniciales }: { horasIniciales: number }) {
-  const [gerencia, setGerencia] = useState<Gerencia>("otras");
+export function CotizadorPlan({
+  horasIniciales,
+  gerenciaInicial = "otras",
+  modalidadInicial = "mensual",
+}: {
+  horasIniciales: number;
+  gerenciaInicial?: Gerencia;
+  modalidadInicial?: Modalidad;
+}) {
+  const [gerencia, setGerencia] = useState<Gerencia>(gerenciaInicial);
   const [horasTexto, setHorasTexto] = useState(String(horasIniciales));
-  const [modalidad, setModalidad] = useState<Modalidad>("mensual");
+  const [modalidad, setModalidad] = useState<Modalidad>(modalidadInicial);
   const horas = Number(horasTexto);
   const valida = esHorasValidas(horas);
   const cotizacion = valida ? cotizarPlan({ gerencia, horas, modalidad }) : null;

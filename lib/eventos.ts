@@ -3,6 +3,7 @@ export type TipoRegistro = "pyme" | "ejecutivo";
 
 export const EVENTO_TIPO = "silverjob:tipo";
 export const EVENTO_PLAN = "silverjob:plan";
+export const EVENTO_AREA = "silverjob:area";
 
 export function elegirTipo(tipo: TipoRegistro) {
   window.dispatchEvent(new CustomEvent<TipoRegistro>(EVENTO_TIPO, { detail: tipo }));
@@ -10,4 +11,8 @@ export function elegirTipo(tipo: TipoRegistro) {
 
 export function sugerirHoras(opcion: string) {
   window.dispatchEvent(new CustomEvent<string>(EVENTO_PLAN, { detail: opcion }));
+}
+
+export function sugerirArea(area: string) {
+  window.dispatchEvent(new CustomEvent<string>(EVENTO_AREA, { detail: area }));
 }

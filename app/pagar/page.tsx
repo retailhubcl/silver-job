@@ -3,7 +3,7 @@ import Encabezado from "@/components/Encabezado";
 import Pie from "@/components/Pie";
 import { CotizadorBloques, CotizadorPlan } from "@/components/Cotizador";
 import { pagosHabilitados } from "@/lib/mercadopago";
-import { esHorasValidas } from "@/lib/precios";
+import { esHorasValidas, type Gerencia, type Modalidad } from "@/lib/precios";
 
 export const metadata: Metadata = {
   title: "Contratar un plan | Silver Job",
@@ -19,10 +19,12 @@ const ERRORES: Record<string, string> = {
   mercadopago: "No pudimos iniciar el pago con Mercado Pago. Inténtalo de nuevo en unos minutos o escríbenos a tomas@silverjob.cl.",
 };
 
-export default async function Pagar({ searchParams }: { searchParams: Promise<{ tipo?: string; horas?: string; error?: string }> }) {
-  const { tipo, horas, error } = await searchParams;
+export default async function Pagar({ searchParams }: { searchParams: Promise<{ tipo?: string; horas?: string; gerencia?: string; modalidad?: string; error?: string }> }) {
+  const { tipo, horas, gerencia, modalidad, error } = await searchParams;
   const bloques = tipo === "bloque";
   const horasIniciales = esHorasValidas(Number(horas)) ? Number(horas) : 18;
+  const gerenciaInicial: Gerencia = gerencia === "general" ? "general" : "otras";
+  const modalidadInicial: Modalidad = modalidad === "anual" ? "anual" : "mensual";
 
   return (
     <>
@@ -46,7 +48,7 @@ export default async function Pagar({ searchParams }: { searchParams: Promise<{ 
               {bloques ? <a href="/pagar">¿Quieres contratar un plan?</a> : <a href="/pagar?tipo=bloque">¿Ya tienes un plan y necesitas más horas?</a>}
             </p>
             {error && ERRORES[error] && <p className="form-error" role="alert">{ERRORES[error]}</p>}
-            {bloques ? <CotizadorBloques /> : <CotizadorPlan horasIniciales={horasIniciales} />}
+            {bloques ? <CotizadorBloques /> : <CotizadorPlan horasIniciales={horasIniciales} gerenciaInicial={gerenciaInicial} modalidadInicial={modalidadInicial} />}
             <p className="pago-nota">Te llevaremos al sitio seguro de Mercado Pago. Silver Job no ve ni guarda los datos de tu tarjeta.</p>
           </>
         )}
