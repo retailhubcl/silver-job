@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
-import { EVENTO_PLAN, EVENTO_TIPO, type TipoRegistro } from "@/lib/eventos";
+import { EVENTO_AREA, EVENTO_PLAN, EVENTO_TIPO, type TipoRegistro } from "@/lib/eventos";
 import { ORDEN, normalizarLinkedin, validarRegistro, type Errores } from "@/lib/validacion";
 
 // Planilla de Google (Apps Script); debe responder {"result":"success"}
@@ -15,6 +15,7 @@ const AREAS = ["Gerencia general", "Operaciones", "Marketing", "Finanzas", "Come
 export default function FormularioLista() {
   const [tipo, setTipo] = useState<TipoRegistro>("pyme");
   const [horas, setHoras] = useState("");
+  const [areaPyme, setAreaPyme] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(false);
   const [correoRegistrado, setCorreoRegistrado] = useState<string | null>(null);
@@ -26,8 +27,11 @@ export default function FormularioLista() {
     const alTipo = (e: Event) => elegirTipo((e as CustomEvent<TipoRegistro>).detail);
     const alPlan = (e: Event) => setHoras((e as CustomEvent<string>).detail);
     window.addEventListener(EVENTO_TIPO, alTipo);
+    const alArea = (e: Event) => setAreaPyme((e as CustomEvent<string>).detail);
     window.addEventListener(EVENTO_PLAN, alPlan);
+    window.addEventListener(EVENTO_AREA, alArea);
     return () => {
+      window.removeEventListener(EVENTO_AREA, alArea);
       window.removeEventListener(EVENTO_TIPO, alTipo);
       window.removeEventListener(EVENTO_PLAN, alPlan);
     };
@@ -102,7 +106,7 @@ export default function FormularioLista() {
 
           <div className="campo solo-pyme" hidden={!esPyme}><label htmlFor="empresa">Empresa</label><input id="empresa" name="empresa" autoComplete="organization" disabled={!esPyme} required {...marca("empresa", "empresa")} />{mensaje("empresa", "empresa")}</div>
           <div className="campo solo-pyme" hidden={!esPyme}><label htmlFor="area-pyme">¿Qué gerencia necesitas?</label>
-            <select id="area-pyme" name="area" disabled={!esPyme} required defaultValue="" {...(esPyme ? marca("area", "area-pyme") : {})}>
+            <select id="area-pyme" name="area" disabled={!esPyme} required value={areaPyme} onChange={(e) => setAreaPyme(e.target.value)} {...(esPyme ? marca("area", "area-pyme") : {})}>
               <option value="">Elige una</option>
               {AREAS.map((a) => <option key={a}>{a}</option>)}
             </select>
