@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { EVENTO_PLAN, EVENTO_TIPO, type TipoRegistro } from "@/lib/eventos";
+import { ORDEN, normalizarLinkedin, validarRegistro, type Errores } from "@/lib/validacion";
 
 // Planilla de Google (Apps Script); debe responder {"result":"success"}
 const ENDPOINT =
@@ -18,10 +19,11 @@ export default function FormularioLista() {
   const [error, setError] = useState(false);
   const [correoRegistrado, setCorreoRegistrado] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
+  const [errores, setErrores] = useState<Errores>({});
   const linkedin = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const alTipo = (e: Event) => setTipo((e as CustomEvent<TipoRegistro>).detail);
+    const alTipo = (e: Event) => elegirTipo((e as CustomEvent<TipoRegistro>).detail);
     const alPlan = (e: Event) => setHoras((e as CustomEvent<string>).detail);
     window.addEventListener(EVENTO_TIPO, alTipo);
     window.addEventListener(EVENTO_PLAN, alPlan);
@@ -31,26 +33,29 @@ export default function FormularioLista() {
     };
   }, []);
 
-  function normalizarLinkedin() {
-    const campo = linkedin.current;
-    if (!campo || campo.disabled) return;
-    let v = campo.value.trim();
-    if (v && !/^https?:\/\//i.test(v)) v = "https://" + v;
-    campo.value = v;
-    campo.setCustomValidity(
-      v && !/linkedin\.com\/in\//i.test(v) ? "Ingresa la dirección de tu perfil, por ejemplo linkedin.com/in/tu-nombre" : "",
-    );
+  function elegirTipo(nuevo: TipoRegistro) {
+    setTipo(nuevo);
+    setErrores({});
+  }
+
+  // Al corregir un campo se quita su mensaje de error
+  function alCambiar(e: React.FormEvent<HTMLFormElement>) {
+    const nombre = (e.target as HTMLInputElement).name;
+    if (errores[nombre]) setErrores(({ [nombre]: _, ...resto }) => resto);
   }
 
   async function enviar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    normalizarLinkedin();
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    if (linkedin.current && !linkedin.current.disabled) linkedin.current.value = normalizarLinkedin(linkedin.current.value);
+    const datos = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    const encontrados = validarRegistro(datos, tipo);
+    setErrores(encontrados);
+    const primero = ORDEN[tipo].find((k) => encontrados[k]);
+    if (primero) {
+      form.querySelector<HTMLElement>(`[name="${primero}"]:not(:disabled)`)?.focus();
       return;
     }
-    const datos = Object.fromEntries(new FormData(form)) as Record<string, string>;
     setEnviando(true);
     setError(false);
     try {
@@ -75,49 +80,63 @@ export default function FormularioLista() {
   }
 
   const esPyme = tipo === "pyme";
+  const cantidadErrores = Object.keys(errores).length;
+  // Atributos y mensaje de error de cada campo (id = id del control)
+  const marca = (campo: string, id: string) =>
+    errores[campo] ? { "aria-invalid": true as const, "aria-describedby": `${id}-error` } : {};
+  const mensaje = (campo: string, id: string) =>
+    errores[campo] ? <p className="campo-error" id={`${id}-error`}>{errores[campo]}</p> : null;
   return (
     <div className="tarjeta-form">
       <div className="selector" role="tablist" aria-label="Tipo de registro" hidden={!!correoRegistrado}>
-        <button type="button" role="tab" id="tab-pyme" aria-selected={esPyme} aria-controls="form-lista" onClick={() => setTipo("pyme")}>Soy pyme</button>
-        <button type="button" role="tab" id="tab-ejecutivo" aria-selected={!esPyme} aria-controls="form-lista" onClick={() => setTipo("ejecutivo")}>Soy ejecutivo</button>
+        <button type="button" role="tab" id="tab-pyme" aria-selected={esPyme} aria-controls="form-lista" onClick={() => elegirTipo("pyme")}>Soy pyme</button>
+        <button type="button" role="tab" id="tab-ejecutivo" aria-selected={!esPyme} aria-controls="form-lista" onClick={() => elegirTipo("ejecutivo")}>Soy ejecutivo</button>
       </div>
 
-      <form id="form-lista" noValidate onSubmit={enviar} hidden={!!correoRegistrado}>
+      <form id="form-lista" noValidate onSubmit={enviar} onInput={alCambiar} onChange={alCambiar} hidden={!!correoRegistrado}>
         <input type="hidden" name="tipo" value={tipo} />
         <div className="trampa" aria-hidden="true"><label>Sitio web <input name="sitio" tabIndex={-1} autoComplete="off" /></label></div>
         <div className="campos">
-          <div className="campo"><label htmlFor="nombre">Nombre</label><input id="nombre" name="nombre" autoComplete="name" required /></div>
-          <div className="campo"><label htmlFor="correo">Correo</label><input id="correo" name="correo" type="email" autoComplete="email" required /></div>
+          <div className="campo"><label htmlFor="nombre">Nombre</label><input id="nombre" name="nombre" autoComplete="name" required {...marca("nombre", "nombre")} />{mensaje("nombre", "nombre")}</div>
+          <div className="campo"><label htmlFor="correo">Correo</label><input id="correo" name="correo" type="email" autoComplete="email" required {...marca("correo", "correo")} />{mensaje("correo", "correo")}</div>
 
-          <div className="campo solo-pyme" hidden={!esPyme}><label htmlFor="empresa">Empresa</label><input id="empresa" name="empresa" autoComplete="organization" disabled={!esPyme} required /></div>
+          <div className="campo solo-pyme" hidden={!esPyme}><label htmlFor="empresa">Empresa</label><input id="empresa" name="empresa" autoComplete="organization" disabled={!esPyme} required {...marca("empresa", "empresa")} />{mensaje("empresa", "empresa")}</div>
           <div className="campo solo-pyme" hidden={!esPyme}><label htmlFor="area-pyme">¿Qué gerencia necesitas?</label>
-            <select id="area-pyme" name="area" disabled={!esPyme} required defaultValue="">
+            <select id="area-pyme" name="area" disabled={!esPyme} required defaultValue="" {...(esPyme ? marca("area", "area-pyme") : {})}>
               <option value="">Elige una</option>
               {AREAS.map((a) => <option key={a}>{a}</option>)}
             </select>
+            {esPyme && mensaje("area", "area-pyme")}
           </div>
           <div className="campo ancho solo-pyme" hidden={!esPyme}><label htmlFor="horas">Horas al mes, aproximado</label>
-            <select id="horas" name="horas" disabled={!esPyme} required value={horas} onChange={(e) => setHoras(e.target.value)}>
+            <select id="horas" name="horas" disabled={!esPyme} required value={horas} onChange={(e) => setHoras(e.target.value)} {...marca("horas", "horas")}>
               <option value="">Elige un rango</option>
               <option>Hasta 10 (Básico)</option><option>Entre 11 y 26 (Estándar)</option><option>Entre 27 y 40 (Intensivo)</option><option>Aún no lo sé</option>
             </select>
+            {mensaje("horas", "horas")}
           </div>
 
-          <div className="campo ancho solo-ejecutivo" hidden={esPyme}><label htmlFor="linkedin">Perfil de LinkedIn</label><input ref={linkedin} id="linkedin" name="linkedin" type="text" inputMode="url" autoComplete="url" placeholder="linkedin.com/in/tu-nombre" disabled={esPyme} required onInput={(e) => e.currentTarget.setCustomValidity("")} /></div>
+          <div className="campo ancho solo-ejecutivo" hidden={esPyme}><label htmlFor="linkedin">Perfil de LinkedIn</label><input ref={linkedin} id="linkedin" name="linkedin" type="text" inputMode="url" autoComplete="url" placeholder="linkedin.com/in/tu-nombre" disabled={esPyme} required {...marca("linkedin", "linkedin")} />{mensaje("linkedin", "linkedin")}</div>
           <div className="campo solo-ejecutivo" hidden={esPyme}><label htmlFor="area-ejec">Tu área de experiencia</label>
-            <select id="area-ejec" name="area" disabled={esPyme} required defaultValue="">
+            <select id="area-ejec" name="area" disabled={esPyme} required defaultValue="" {...(!esPyme ? marca("area", "area-ejec") : {})}>
               <option value="">Elige una</option>
               {AREAS.map((a) => <option key={a}>{a}</option>)}
             </select>
+            {!esPyme && mensaje("area", "area-ejec")}
           </div>
           <div className="campo solo-ejecutivo" hidden={esPyme}><label htmlFor="anios">Años de experiencia</label>
-            <select id="anios" name="anios" disabled={esPyme} required defaultValue="">
+            <select id="anios" name="anios" disabled={esPyme} required defaultValue="" {...marca("anios", "anios")}>
               <option value="">Elige un rango</option>
               <option>Entre 10 y 20</option><option>Entre 20 y 30</option><option>Más de 30</option>
             </select>
+            {mensaje("anios", "anios")}
           </div>
         </div>
-        <label className="consentimiento"><input type="checkbox" name="consentimiento" value="si" required /> <span>Acepto que Silver Job use mis datos para contactarme, según la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+        <label className="consentimiento"><input type="checkbox" id="consentimiento" name="consentimiento" value="si" required {...marca("consentimiento", "consentimiento")} /> <span>Acepto que Silver Job use mis datos para contactarme, según la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
+        {mensaje("consentimiento", "consentimiento")}
+        <p className="form-error" role="alert" hidden={cantidadErrores === 0}>
+          {cantidadErrores === 1 ? "Revisa el campo marcado." : `Revisa los ${cantidadErrores} campos marcados.`}
+        </p>
         <p className="form-error" id="form-error" role="alert" hidden={!error}>
           No pudimos guardar tu registro. Inténtalo de nuevo o escríbenos a tomas@silverjob.cl.
         </p>
