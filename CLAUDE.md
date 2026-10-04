@@ -34,7 +34,7 @@ app/
   pago/[estado]/page.tsx      Vuelta desde Mercado Pago: exito, pendiente, error
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
-components/                   Anillo, CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan, Pie
+components/                   CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan, Pie, Simbolo
 lib/                          precios (única fuente de precios), validacion (formulario de la lista), mercadopago (API), firma (webhook), eventos
 app/fuentes/                  Source Sans 3 y Source Serif 4 (woff2, subconjunto latino) con sus licencias
 app/robots.ts, sitemap.ts     robots.txt y sitemap.xml; íconos en app/icon.svg, apple-icon.png y favicon.ico
@@ -96,12 +96,19 @@ Tipografías (servidas desde el sitio con `next/font/local`, archivos y licencia
 --grafito-2: #4A5866    texto secundario
 --noche: #16202A        secciones oscuras, encabezado
 --tinta: #3D6FD1        solo foco de accesibilidad
---vino: #A3324F, --trigo: #D9A33A   solo para datos (calendario) y el logo
+--vino: #A3324F, --trigo: #D9A33A   solo para datos (calendario)
 Grises de tramos: #D5DAE0, #A9B2BC, #6F7B87
 Degradado plata (lingote): #F7F8FA → #C9D0D7 → #8E99A5
 ```
 
-Principios: la plata es el color protagonista; los colores del logo (vino, trigo, tinta) quedan solo para datos. El **lingote de plata** es el elemento gráfico de marca (evaluaciones, sello, viñetas de ejecutivos). Logo: anillo de tres colores con la palabra "silverjob". Título del hero en blanco, tipografía formal.
+Principios: la plata es el color protagonista; vino, trigo y tinta quedan solo para datos. El **lingote de plata** es el elemento gráfico de marca (evaluaciones, sello, viñetas de ejecutivos). Título del hero en blanco, tipografía formal.
+
+**Logo (desde el 4 de octubre de 2026):** la «S» del encuentro dentro de un marco, más el nombre «Silver Job» en Source Serif 4 600 con «Silver» en plata.
+- Símbolo: la «S» de Source Serif 4 (peso 700, tamaño óptico 60) con las puntas en corte diagonal limpio (sin el gancho de la fuente), partida por la columna central en dos piezas: la pyme y el ejecutivo que se encuentran. Contornos ya recortados en `components/Simbolo.tsx`; colores en `.simbolo` (`--s-arriba`, `--s-abajo`, `--s-marco`) en `globals.css`.
+- Variantes: `marco` (encabezado, pie, tarjetas), `lleno` (fondo noche, sin marco: íconos de pestaña, iPhone y avatar) y `solo` (la «S» sin marco: símbolo entre pymes y ejecutivos y fondos decorativos).
+- Colores: sobre fondo oscuro, pieza superior #F7F8FA, inferior #A9B2BC, marco #7D8894; sobre fondo claro, #1E2A36, #6F7B87 y #6F7B87. «Silver» en #C9D0D7 sobre oscuro y #6F7B87 sobre claro (en el pie, a 24 px para cumplir 3:1 como texto grande).
+- Íconos: `app/icon.svg`, `app/apple-icon.png` (180 px) y `app/favicon.ico` (32 y 48 px). Imagen para compartir: `public/img/og.jpg` (1200 × 630).
+- Si el logo se registra como marca, conviene que un diseñador haga el ajuste final para que el dibujo sea propio (hoy deriva de una fuente con licencia OFL).
 
 ### Reglas de redacción
 
@@ -260,7 +267,7 @@ Ordenada por impacto/esfuerzo. Medición con Lighthouse en móvil simulado sobre
 | 23 | Prueba de confianza en el hero (estado del lanzamiento, primeros pilotos) | Experiencia | Pendiente |
 | 24 | Fotos y testimonios reales de los pilotos | Visual | Pendiente |
 | 25 | Páginas separadas `/pymes` y `/ejecutivos`, cada una con su formulario | Experiencia | Pendiente |
-| 26 | Rediseñar el logo para que evoque la plata (obliga a actualizar el kit de redes) | Visual | Pendiente |
+| 26 | Rediseñar el logo para que evoque la plata (obliga a actualizar el kit de redes) | Visual | Hecho en el sitio; falta el kit de redes |
 
 Notas de los puntos hechos:
 - La fuente de títulos se mantiene con eje óptico (122 KB) para conservar el aspecto del hero. La versión sin eje óptico (51 KB) subía el rendimiento a 96 y bajaba el LCP a 2,7 s, pero el título se ve más grueso y ancho: es una decisión de marca, no técnica.

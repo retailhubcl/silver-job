@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Anillo from "@/components/Anillo";
+import Simbolo from "@/components/Simbolo";
 import CalendarioPatricia from "@/components/CalendarioPatricia";
 import Encabezado from "@/components/Encabezado";
 import EnlaceRegistro from "@/components/EnlaceRegistro";
@@ -30,7 +30,7 @@ export default function Inicio() {
 
       <main id="contenido" tabIndex={-1}>
       <div className="oscuro">
-        <div className="fondo-anillo"><Anillo /></div>
+        <div className="fondo-simbolo"><Simbolo variante="solo" /></div>
 
         <section className="hero">
           <div className="contenedor">
@@ -45,18 +45,18 @@ export default function Inicio() {
 
             <figure className="foto-hero">
               <Image src="/img/patricia-vina.jpg" width={900} height={1117} preload fetchPriority="high" sizes="(max-width: 900px) min(calc(100vw - 2.5rem), 30rem), 480px" alt="Patricia, ejecutiva de pelo plateado, de pie en la sala de barricas de una viña familiar" />
-              <figcaption><Anillo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes. <em>Caso ilustrativo.</em></span></figcaption>
+              <figcaption><Simbolo /><span><strong>Patricia, ex gerenta de operaciones.</strong> Hoy asesora a tres pymes, 60 horas al mes. <em>Caso ilustrativo.</em></span></figcaption>
             </figure>
           </div>
         </section>
       </div>
 
         <section className="puente" aria-label="Por qué existe Silver Job">
-          <div className="anillo-enorme"><Anillo /></div>
+          <div className="simbolo-enorme"><Simbolo variante="solo" /></div>
           <div className="contenedor">
             <div className="lados-frase">
               <p className="frase izq">Hay <b>pymes</b> que crecieron más rápido que su equipo de gestión.</p>
-              <div className="union"><Anillo /></div>
+              <div className="union"><Simbolo variante="solo" /></div>
               <p className="frase">Y <b>ejecutivos</b> con décadas de experiencia, listos para su próximo desafío.</p>
             </div>
             <p className="cierre">Silver Job junta a los dos.</p>
