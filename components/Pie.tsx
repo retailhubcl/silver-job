@@ -11,6 +11,7 @@ export default function Pie() {
         <div className="pie-enlaces">
           <a href="mailto:tomas@silverjob.cl">tomas@silverjob.cl</a>
           <a href="/privacidad">Política de privacidad</a>
+          <a href="/terminos">Términos y condiciones</a>
           <span>© 2026 Silver Job, Santiago, Chile</span>
         </div>
       </div>

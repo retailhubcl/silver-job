@@ -211,7 +211,7 @@ El resultado de Estándar coincide con la v1 (cobro neto $1.545.882 con el mix 3
 
 ## 5. Documentos relacionados
 
-- **Borrador de Términos y Condiciones** (Claude Doc): recoge todas las reglas de la sección 3 y una lista de puntos para el abogado (Ley 19.628 y Ley 21.719 de datos personales, riesgo de relación laboral y Ley 21.431, cláusula de no elusión, horas no reembolsables frente a protección al consumidor, tratamiento tributario, término del plan anual). Pregunta abierta: si el ejecutivo avisa con 24 h o más, ¿puede reagendar dentro del mes antes de que la hora pase a crédito?
+- **Borrador de Términos y Condiciones** ([Claude Doc](https://claude.ai/artifact/1o4gFD8sULvu1X9hr9eoBi), alineado con las reglas vigentes el 9/10/2026; la versión pública está en `/terminos`): recoge todas las reglas de la sección 3 y una lista de puntos para el abogado (Ley 19.628 y Ley 21.719 de datos personales, riesgo de relación laboral y Ley 21.431, cláusula de no elusión, horas no reembolsables frente a protección al consumidor, tratamiento tributario, término del plan anual). Pregunta abierta: si el ejecutivo avisa con 24 h o más, ¿puede reagendar dentro del mes antes de que la hora pase a crédito?
 - **Kit de redes** (Instagram y LinkedIn): carpeta de Google Drive "silver-job-kit-redes".
 
 ---
@@ -280,7 +280,13 @@ Veredicto: 5,5/10 en experiencia centrada en el cliente. Técnica de primer nive
 
 **Etapa 1 (código, hecha):** enlace "Saltar al contenido" y hero dentro de `main`; el desplazamiento reserva el alto real del encabezado (variable `--alto-encabezado`), así el foco no queda tapado (WCAG 2.4.11); títulos y menú que soportan el texto del sistema al 200 % y textos de lectura de 16 px como mínimo; validación propia del formulario (`lib/validacion.ts`, mensajes bajo cada campo, correo con dominio); página 404 en español; encabezado y pie (`components/Pie.tsx`) en las páginas internas; costo estimado en la guía de plan; cifra con IVA en la comparación; rótulo "Caso ilustrativo" en el caso de Patricia.
 
-**Etapa 2 (espera decisiones de Tomás):** fecha de apertura o estado, WhatsApp y agenda, quiénes somos y datos de la empresa, términos y condiciones con aceptación en `/pagar`, preguntas frecuentes a ~12, ingreso del ejecutivo (el fee ya se eliminó), correo de confirmación.
+**Etapa 2 (decisiones de Tomás del 9/10/2026):**
+- Estado: se mantiene la lista de espera **sin fecha**; el formulario explica qué pasa después de inscribirse (3 pasos) y que no compromete.
+- Contacto: **solo correo**, más visible (bajo el texto del formulario y al final de las preguntas frecuentes). Sin WhatsApp ni agenda por ahora.
+- Ingreso del ejecutivo: **no se publica** todavía.
+- Términos: **publicado el borrador** en `/terminos` como versión preliminar (noindex, enlazado en el pie). `/pagar` exige aceptarlos (casilla `terminos`; la API de checkout rechaza sin ella y guarda `terminos: "preliminar-2026-10-09"` en la metadata del pago).
+- Preguntas frecuentes: 10 (nuevas: cuándo empieza, costos además de la mensualidad, horas extra en un mes, descuento anual).
+- Pendiente: quiénes somos y datos de la empresa (razón social, RUT), testimonios o cifras, correo de confirmación, y las preguntas de "Cómo se cobra" (sección 9).
 
 **Etapa 3:** páginas `/pymes` y `/ejecutivos`, reordenar la página de pymes, prueba social real, medición y pruebas con usuarios.
 
