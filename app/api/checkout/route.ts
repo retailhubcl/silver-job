@@ -17,6 +17,7 @@ export async function POST(request: Request) {
   const comprador = { nombre: texto("nombre"), correo: texto("correo"), empresa: texto("empresa") };
   if (gerencia !== "general" && gerencia !== "otras") return volver("plan");
   if (!comprador.nombre || !comprador.empresa || !CORREO.test(comprador.correo)) return volver("datos");
+  if (texto("terminos") !== "si") return volver("terminos");
 
   let cotizacion;
   let metadata: Record<string, string | number | boolean>;
@@ -25,13 +26,13 @@ export async function POST(request: Request) {
     const cantidad = Number(texto("cantidad"));
     if (!tramo || !Number.isInteger(cantidad) || cantidad < 1 || cantidad > BLOQUES_MAX) return volver("plan");
     cotizacion = cotizarBloques({ gerencia, tramo, cantidad });
-    metadata = { tipo, gerencia, tramo: tramo.id, bloques: cantidad };
+    metadata = { tipo, gerencia, tramo: tramo.id, bloques: cantidad, terminos: "preliminar-2026-10-09" };
   } else {
     const horas = Number(texto("horas"));
     if (!esHorasValidas(horas)) return volver("plan");
     const modalidad = texto("modalidad") === "anual" ? "anual" : "mensual";
     cotizacion = cotizarPlan({ gerencia, horas, modalidad });
-    metadata = { tipo, gerencia, horas, modalidad };
+    metadata = { tipo, gerencia, horas, modalidad, terminos: "preliminar-2026-10-09" };
   }
 
   try {

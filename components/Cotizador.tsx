@@ -34,6 +34,15 @@ function Resumen({ lineas, total, nota }: { lineas: { concepto: string; monto: n
   );
 }
 
+function AceptarTerminos() {
+  return (
+    <label className="consentimiento">
+      <input type="checkbox" name="terminos" value="si" required />
+      <span>Acepto los <a href="/terminos" target="_blank" rel="noopener">términos y condiciones</a> (versión preliminar).</span>
+    </label>
+  );
+}
+
 function DatosComprador() {
   return (
     <div className="pago-campos">
@@ -90,6 +99,7 @@ export function CotizadorPlan({
         <p className="form-error" role="alert">Elige entre 1 y {HORAS_MAX} horas al mes, en horas enteras.</p>
       )}
       <DatosComprador />
+      <AceptarTerminos />
       <button className="boton" type="submit" disabled={!cotizacion}>Pagar con Mercado Pago</button>
     </form>
   );
@@ -122,6 +132,7 @@ export function CotizadorBloques() {
       </div>
       <Resumen lineas={cotizacion.lineas} total={cotizacion.total} nota="Las horas adicionales cuestan 10% más que la hora de tu plan y se usan dentro del mismo mes. Si necesitas más horas todos los meses, te conviene subir de plan." />
       <DatosComprador />
+      <AceptarTerminos />
       <button className="boton" type="submit">Pagar con Mercado Pago</button>
     </form>
   );

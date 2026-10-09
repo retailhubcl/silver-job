@@ -151,7 +151,7 @@ export default function FormularioLista() {
 
       <div className="confirmacion" id="confirmacion" role="status" aria-live="polite" style={correoRegistrado ? { display: "block" } : undefined}>
         <h3>Ya estás en la lista</h3>
-        <p id="confirmacion-texto">Te escribiremos a {correoRegistrado} cuando abramos.</p>
+        <p id="confirmacion-texto">Te escribiremos a {correoRegistrado} para conocer tu caso, y te avisaremos antes que a nadie cuando abramos.</p>
         <div className="compartir">
           <p>¿Conoces a una pyme o a un ejecutivo al que le serviría Silver Job?</p>
           <div className="acciones">

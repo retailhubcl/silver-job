@@ -16,6 +16,7 @@ export const dynamic = "force-dynamic";
 const ERRORES: Record<string, string> = {
   plan: "Revisa la gerencia, las horas o los bloques que elegiste.",
   datos: "Revisa tu nombre, empresa y correo.",
+  terminos: "Para pagar tienes que aceptar los términos y condiciones.",
   mercadopago: "No pudimos iniciar el pago con Mercado Pago. Inténtalo de nuevo en unos minutos o escríbenos a tomas@silverjob.cl.",
 };
 

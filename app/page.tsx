@@ -222,13 +222,18 @@ export default function Inicio() {
           <div className="contenedor">
             <h2 id="preguntas-titulo">Preguntas frecuentes</h2>
             <div className="lista-preguntas">
+              <details><summary>¿Cuándo empieza a funcionar Silver Job?</summary><p>Estamos armando el primer grupo de pymes y ejecutivos. Si te inscribes en la lista, te avisamos antes que a nadie cuando abramos. Inscribirte no te compromete a nada.</p></details>
               <details><summary>¿Quién responde por el trabajo del ejecutivo?</summary><p>El alcance y los entregables se acuerdan directamente entre la pyme y el ejecutivo, y son responsabilidad de ambos. Silver Job los conecta, coordina la agenda y administra los pagos.</p></details>
               <details><summary>¿Qué pasa si no uso todas mis horas?</summary><p>Las horas de cada plan se usan dentro del mes contratado. Puedes reagendar una sesión al mes avisando con 24 horas de anticipación. Si es el ejecutivo quien cancela, esa hora queda como crédito para el mes siguiente.</p></details>
               <details><summary>¿Cómo validan a los ejecutivos?</summary><p>Revisamos la trayectoria de cada ejecutivo antes de presentarlo. Después, las pymes evalúan su trabajo con lingotes de uno a cinco, y los mejor evaluados obtienen el sello Plata certificada.</p></details>
               <details><summary>¿Cómo se paga?</summary><p>La pyme paga por adelantado una mensualidad a Silver Job, con IVA incluido, que ya incluye las horas del ejecutivo. No hay matrícula, comisiones ni otros cobros. Silver Job le paga al ejecutivo a fin de mes por las horas trabajadas.</p></details>
+              <details><summary>¿Hay costos además de la mensualidad?</summary><p>No. La mensualidad ya incluye las horas del ejecutivo y el IVA. No cobramos matrícula, comisiones ni fees.</p></details>
+              <details><summary>¿Puedo sumar horas en un mes puntual?</summary><p>Sí. Puedes comprar bloques de 5 horas para usar ese mismo mes, a 10% más que la hora de tu plan. Si necesitas más horas todos los meses, te conviene subir de plan.</p></details>
+              <details><summary>¿Hay descuento por contratar un año?</summary><p>Sí. Si pagas 12 meses por adelantado tienes 10% de descuento. Las horas de cada mes se siguen usando dentro de ese mes.</p></details>
               <details><summary>¿Cuánto cuesta sumarme como ejecutivo?</summary><p>Nada. Crear tu perfil es gratis y no hay fees ni comisiones que se descuenten de tu pago: Silver Job te paga el valor hora acordado por cada hora trabajada.</p></details>
               <details><summary>¿Es confidencial lo que comparto?</summary><p>La agenda de Silver Job registra solo fechas y horarios, no el contenido de las sesiones. La información que la pyme comparte con el ejecutivo queda entre ellos.</p></details>
             </div>
+            <p className="mas-preguntas">¿Tienes otra pregunta? Escríbenos a <a href="mailto:tomas@silverjob.cl">tomas@silverjob.cl</a>.</p>
           </div>
         </section>
 
@@ -236,7 +241,13 @@ export default function Inicio() {
           <div className="contenedor">
             <div className="intro">
               <h2 id="lista-titulo">Súmate a la lista</h2>
-              <p>Estamos armando el primer grupo de pymes y ejecutivos. Déjanos tus datos y te avisamos cuando abramos.</p>
+              <p>Estamos armando el primer grupo de pymes y ejecutivos. Inscribirte toma un minuto y no te compromete a nada.</p>
+              <ol>
+                <li>Te escribimos para conocer qué necesitas o cuál es tu experiencia.</li>
+                <li>Cuando abramos, te avisamos antes que a nadie.</li>
+                <li>Si eres pyme, te presentamos perfiles para tu área. Si eres ejecutivo, revisamos tu trayectoria para presentarte a pymes.</li>
+              </ol>
+              <p className="contacto">¿Prefieres escribirnos? <a href="mailto:tomas@silverjob.cl">tomas@silverjob.cl</a></p>
             </div>
 
             <FormularioLista />
