@@ -54,7 +54,7 @@ Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `np
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
 | `NEXT_PUBLIC_LISTA_ENDPOINT` | Obsoleta: el navegador ya no habla con el Apps Script. Usar `LISTA_ENDPOINT` (solo servidor) mientras dure el respaldo, y borrarla al migrar |
-| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Pendiente (Sensitive). Proyecto `silver-job` (São Paulo), que estaba pausado al 17/10/2026. Producción y Preview con bases distintas |
+| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Pendiente (Sensitive). Proyecto `silver-job` (ref `zamuogqipivtqssfyswq`, São Paulo): restaurado y con la migración aplicada el 17/10/2026; `SUPABASE_URL` = `https://zamuogqipivtqssfyswq.supabase.co`. Falta crear la clave secreta y cargarla. Producción y Preview con bases distintas |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Pendiente. Captcha de Cloudflare; sin ellas queda desactivado |
 | `LISTA_TOKEN` | Opcional: clave compartida con la propiedad `CLAVE` del Apps Script (respaldo) |
 
@@ -228,8 +228,8 @@ El resultado de Estándar coincide con la v1 (cobro neto $1.545.882 con el mix 3
 2. ~~Activar Web Analytics~~ Hecho el 1/10/2026 (visitas; los eventos requieren plan Pro).
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
 4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
-5. ~~Guardar los pagos~~ Hecho en código el 17/10/2026 (tabla `pagos`, monto verificado); falta aplicar la migración y cargar las claves de Supabase. Ver `docs/seguridad.md`.
-6. **Seguridad (auditoría del 17/10/2026):** código endurecido (cabeceras, CSRF, límites, validación de servidor, Turnstile, webhook con caducidad, CI). Falta lo que no es código: restaurar Supabase y aplicar la migración, claves en Vercel, regla de límite en el WAF, 2FA y accesos de la planilla, SPF/DKIM/DMARC, revisión legal. Detalle y plan de incidentes en `docs/seguridad.md`.
+5. ~~Guardar los pagos~~ Hecho en código el 17/10/2026 (tabla `pagos`, monto verificado); migración aplicada el 17/10/2026 (RLS verificado, purga mensual con pg_cron); falta cargar `SUPABASE_URL` y `SUPABASE_SECRET_KEY` en Vercel. Ver `docs/seguridad.md`.
+6. **Seguridad (auditoría del 17/10/2026):** código endurecido (cabeceras, CSRF, límites, validación de servidor, Turnstile, webhook con caducidad, CI). Falta lo que no es código: claves de Supabase y Turnstile en Vercel, regla de límite en el WAF, 2FA y accesos de la planilla, SPF/DKIM/DMARC, revisión legal. Detalle y plan de incidentes en `docs/seguridad.md`.
 
 **Negocio:**
 - Validar con el contador el tratamiento del IVA: si el ejecutivo emite boleta de honorarios y Silver Job cobra por mandato, el IVA podría aplicar solo al margen.
