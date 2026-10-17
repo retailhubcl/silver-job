@@ -1,5 +1,6 @@
 "use client";
 
+import Captcha from "./Captcha";
 import { useState } from "react";
 import {
   DESCUENTO_ANUAL, GERENCIAS, HORAS_MAX, TRAMOS,
@@ -100,6 +101,7 @@ export function CotizadorPlan({
       )}
       <DatosComprador />
       <AceptarTerminos />
+      <Captcha />
       <button className="boton" type="submit" disabled={!cotizacion}>Pagar con Mercado Pago</button>
     </form>
   );
@@ -133,6 +135,7 @@ export function CotizadorBloques() {
       <Resumen lineas={cotizacion.lineas} total={cotizacion.total} nota="Las horas adicionales cuestan 10% más que la hora de tu plan y se usan dentro del mismo mes. Si necesitas más horas todos los meses, te conviene subir de plan." />
       <DatosComprador />
       <AceptarTerminos />
+      <Captcha />
       <button className="boton" type="submit">Pagar con Mercado Pago</button>
     </form>
   );

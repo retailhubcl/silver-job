@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { ipDe, permitido } from "@/lib/limite";
+import { mismoOrigen } from "@/lib/origen";
+import { verificarTurnstile } from "@/lib/turnstile";
 import { crearPreferencia, urlSitio } from "@/lib/mercadopago";
 import { TRAMOS, cotizarBloques, cotizarPlan, esHorasValidas, type Gerencia } from "@/lib/precios";
 
@@ -7,7 +10,13 @@ const BLOQUES_MAX = 4;
 
 // Recibe el formulario de /pagar, recalcula el monto y redirige al checkout de Mercado Pago
 export async function POST(request: Request) {
-  const datos = await request.formData();
+  // Solo formularios del propio sitio, con tope de intentos por IP y captcha si está activo
+  if (!mismoOrigen(request)) return new NextResponse("Origen no permitido", { status: 403 });
+  const ip = ipDe(request);
+  if (!permitido(`checkout:${ip}`, 8, 10 * 60_000)) return new NextResponse("Demasiados intentos", { status: 429 });
+
+  const datos = await request.formData().catch(() => null);
+  if (!datos) return new NextResponse("Formato no válido", { status: 400 });
   const texto = (k: string) => String(datos.get(k) ?? "").trim().slice(0, 200);
   const tipo = texto("tipo") === "bloque" ? "bloque" : "plan";
   const volver = (error: string) =>
@@ -15,6 +24,7 @@ export async function POST(request: Request) {
 
   const gerencia = texto("gerencia") as Gerencia;
   const comprador = { nombre: texto("nombre"), correo: texto("correo"), empresa: texto("empresa") };
+  if (!(await verificarTurnstile(String(datos.get("cf-turnstile-response") ?? ""), ip))) return volver("captcha");
   if (gerencia !== "general" && gerencia !== "otras") return volver("plan");
   if (!comprador.nombre || !comprador.empresa || !CORREO.test(comprador.correo)) return volver("datos");
   if (texto("terminos") !== "si") return volver("terminos");
@@ -36,8 +46,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { url, referencia } = await crearPreferencia(cotizacion, comprador, metadata);
-    console.info("checkout_creado", { referencia, ...metadata, total: cotizacion.total });
+    // Ventana de 10 minutos: la misma compra repetida (doble clic) reutiliza la misma preferencia
+    const semilla = JSON.stringify([comprador.correo.toLowerCase(), metadata, Math.floor(Date.now() / 600_000)]);
+    const { url, referencia } = await crearPreferencia(cotizacion, comprador, metadata, semilla);
+    console.info("checkout_creado", { referencia, tipo, total: cotizacion.total });
     return NextResponse.redirect(url, 303);
   } catch (e) {
     console.error("checkout_error", e);

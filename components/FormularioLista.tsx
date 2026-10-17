@@ -2,13 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import Captcha from "./Captcha";
 import { EVENTO_AREA, EVENTO_PLAN, EVENTO_TIPO, type TipoRegistro } from "@/lib/eventos";
 import { ORDEN, normalizarLinkedin, validarRegistro, type Errores } from "@/lib/validacion";
 
-// Planilla de Google (Apps Script); debe responder {"result":"success"}
-const ENDPOINT =
-  process.env.NEXT_PUBLIC_LISTA_ENDPOINT ??
-  "https://script.google.com/macros/s/AKfycbw9Np-Q-NXn1vAJLqxbbgqyIYjTI8gS5pbItaat_oL4s_3Z1MMuSQgNzQtKq3HFOg_E/exec";
+// El envío pasa por /api/lista, que valida de nuevo, aplica límites y guarda en Supabase
+const ENDPOINT = "/api/lista";
 
 const AREAS = ["Gerencia general", "Operaciones", "Marketing", "Finanzas", "Comercial", "Otra"];
 
@@ -65,7 +64,7 @@ export default function FormularioLista() {
     try {
       const respuesta = await fetch(ENDPOINT, { method: "POST", body: new URLSearchParams(datos) });
       const resultado = await respuesta.json();
-      if (resultado.result !== "success") throw new Error("La planilla no confirmó el registro");
+      if (resultado.result !== "success") throw new Error("El servidor no confirmó el registro");
       track("registro", { tipo: datos.tipo });
       setCorreoRegistrado(datos.correo);
     } catch {
@@ -138,6 +137,7 @@ export default function FormularioLista() {
         </div>
         <label className="consentimiento"><input type="checkbox" id="consentimiento" name="consentimiento" value="si" required {...marca("consentimiento", "consentimiento")} /> <span>Acepto que Silver Job use mis datos para contactarme, según la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a>.</span></label>
         {mensaje("consentimiento", "consentimiento")}
+        <Captcha />
         <p className="form-error" role="alert" hidden={cantidadErrores === 0}>
           {cantidadErrores === 1 ? "Revisa el campo marcado." : `Revisa los ${cantidadErrores} campos marcados.`}
         </p>

@@ -16,7 +16,8 @@ npm run build
 
 | Ruta | Qué hace |
 | --- | --- |
-| `/` | Landing. El formulario envía a la planilla de Google (Apps Script). |
+| `/` | Landing. El formulario envía a `/api/lista`, que valida y guarda en Supabase. |
+| `/api/lista` | Recibe la lista de espera: mismo origen, límite por IP, captcha opcional y validación en el servidor. |
 | `/privacidad` | Política de privacidad (`/privacidad.html` redirige aquí). |
 | `/pagar` | Cotiza y paga un plan (gerencia × horas, mensual o anual, sin cobros aparte). `/pagar?tipo=bloque` vende bloques de 5 h. Cerrada sin `MERCADOPAGO_ACCESS_TOKEN`. |
 | `/api/checkout` | Recalcula el monto en el servidor, crea la preferencia de Checkout Pro y redirige. |
@@ -31,4 +32,6 @@ npm run build
 4. **Mercado Pago**: crear la aplicación en mercadopago.cl/developers (Checkout Pro). En Webhooks, URL `https://silverjob.cl/api/webhooks/mercadopago`, evento **Pagos**; copiar la clave secreta a `MERCADOPAGO_WEBHOOK_SECRET`.
 5. Probar con credenciales y usuarios de prueba; después cambiar a las credenciales de producción y volver a desplegar.
 
-Los pagos confirmados quedan en los logs de Vercel (`pago_mp`) y en el panel de Mercado Pago. Guardarlos en una base de datos es el siguiente paso.
+Los pagos confirmados se guardan en la tabla `pagos` de Supabase (idempotente por `payment_id`, con el monto verificado contra la cotización). Sin Supabase configurado solo quedan en los logs y en el panel de Mercado Pago.
+
+Seguridad, puesta en marcha de Supabase y Turnstile, y plan de incidentes: [`docs/seguridad.md`](docs/seguridad.md).

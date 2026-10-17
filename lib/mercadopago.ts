@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { Cotizacion } from "./precios";
 
 const API = "https://api.mercadopago.com";
@@ -28,9 +29,13 @@ export async function crearPreferencia(
   cotizacion: Cotizacion,
   comprador: Comprador,
   metadata: Record<string, string | number | boolean>,
+  // Misma compra en la misma ventana => misma referencia y misma clave de idempotencia,
+  // así un doble clic no crea dos preferencias. Sin semilla, la referencia es aleatoria.
+  semilla?: string,
 ) {
   const sitio = urlSitio();
-  const referencia = `${metadata.tipo}:${crypto.randomUUID()}`;
+  const unica = semilla ? createHash("sha256").update(semilla).digest("hex").slice(0, 32) : crypto.randomUUID();
+  const referencia = `${metadata.tipo}:${unica}`;
   const respuesta = await fetch(`${API}/checkout/preferences`, {
     method: "POST",
     headers: {

@@ -29,12 +29,17 @@ function doPost(e) {
     // Campo trampa: si viene lleno, es un bot. Respondemos éxito sin guardar.
     if (p.sitio) return responder({ result: "success" });
 
+    // Clave compartida con el sitio (Propiedades del script > CLAVE, igual a LISTA_TOKEN en Vercel).
+    // Sin ella, quien conozca la URL puede escribir en la planilla.
+    const clave = PropertiesService.getScriptProperties().getProperty("CLAVE");
+    if (clave && p.clave !== clave) return responder({ result: "error", error: "no autorizado" });
+
     const hoja = obtenerHoja();
     const encabezados = prepararEncabezados(hoja);
     const fila = encabezados.map(function (titulo) {
       const par = COLUMNAS.filter(function (c) { return c[1] === titulo; })[0];
       if (!par) return "";
-      return par[0] === "fecha" ? new Date() : (p[par[0]] || "");
+      return par[0] === "fecha" ? new Date() : neutralizar(String(p[par[0]] || "").slice(0, 300));
     });
     hoja.appendRow(fila);
     return responder({ result: "success" });
@@ -43,6 +48,12 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// Sheets interpreta como fórmula todo texto que empieza con = + - @ (p. ej. =IMPORTXML que
+// filtra otras filas). El apóstrofe lo deja como texto.
+function neutralizar(valor) {
+  return /^[=+\-@\t\r]/.test(valor) ? "'" + valor : valor;
 }
 
 function obtenerHoja() {

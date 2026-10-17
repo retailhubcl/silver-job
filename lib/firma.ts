@@ -7,11 +7,16 @@ export function firmaValida({
   requestId,
   dataId,
   secreto,
+  toleranciaMs,
+  ahora = Date.now(),
 }: {
   firma: string | null;
   requestId: string | null;
   dataId: string | null;
   secreto: string;
+  // Si se indica, se rechazan firmas más antiguas (o futuras) que este margen: evita repeticiones
+  toleranciaMs?: number;
+  ahora?: number;
 }): boolean {
   if (!firma || !dataId) return false;
   const partes = Object.fromEntries(
@@ -23,6 +28,12 @@ export function firmaValida({
   const ts = partes.ts;
   const v1 = partes.v1;
   if (!ts || !v1) return false;
+  if (toleranciaMs !== undefined) {
+    const n = Number(ts);
+    if (!Number.isFinite(n)) return false;
+    const ms = n < 1e12 ? n * 1000 : n; // Mercado Pago envía milisegundos; se aceptan segundos
+    if (Math.abs(ahora - ms) > toleranciaMs) return false;
+  }
 
   // Mercado Pago firma el id en minúsculas cuando es alfanumérico
   const id = /^[a-z0-9]+$/i.test(dataId) ? dataId.toLowerCase() : dataId;
