@@ -2,7 +2,35 @@
 
 Auditoría del 17/10/2026 y estado de cada hallazgo. Para el contexto del negocio, ver `CLAUDE.md`.
 
-## Qué hace el código (resumen)
+## Estado al 17/10/2026
+
+| Control | Estado |
+|---|---|
+| Cabeceras y CSP en producción | Hecho y verificado |
+| Formulario en Supabase con RLS | Hecho y verificado con inscripciones reales |
+| Purga mensual (pg_cron, 12 meses) | Hecho |
+| Regla de límite del WAF | Hecho y verificado |
+| Turnstile | Hecho y verificado |
+| Retirar Apps Script y `NEXT_PUBLIC_LISTA_ENDPOINT` | Pendiente |
+| Mercado Pago (credenciales de prueba, webhook, compra de prueba) | Pendiente |
+| 2FA, proteger `main`, SPF/DKIM/DMARC, CAA/DNSSEC | Pendiente |
+| Base de pruebas para Preview | Pendiente |
+| Revisión legal antes del 1/12/2026 | Pendiente |
+| Tabla `publicaciones` con permisos abiertos a `anon` (RLS la protege) | Pendiente de decidir |
+
+La lista completa y ordenada de pendientes está en la sección 6 de `CLAUDE.md`.
+
+## Cómo verificar cada control
+
+- **Cabeceras:** `curl -I https://silverjob.cl` debe mostrar `content-security-policy`, `strict-transport-security`, `x-frame-options: DENY`, `x-content-type-options`, `referrer-policy`, `permissions-policy` y no mostrar `x-powered-by`.
+- **Mismo origen:** un `POST` a `/api/lista` o `/api/checkout` sin `Origin` o con uno ajeno debe responder 403.
+- **Límite del WAF** (no se puede probar desde el entorno de Claude; hacerlo desde el navegador): abrir `https://silverjob.cl`, F12 → Consola y ejecutar
+  `(async()=>{for(let i=1;i<=16;i++){const r=await fetch('/api/lista',{method:'POST',body:new URLSearchParams({sitio:'bot'})});const t=(await r.text()).slice(0,60);console.log(i,r.status,r.headers.get('x-vercel-mitigated')||'-',t)}})()`
+  Resultado esperado: 1 a 5 `200` (código), 6 a 10 `429` con `error: limite` (código) y 11 a 16 `429` con `deny` (WAF). No guarda datos (campo trampa lleno). Deja bloqueada la IP unos 10 minutos.
+- **Captcha:** un `POST` válido a `/api/lista` sin token o con token falso debe responder 400 `captcha`.
+- **Base de datos:** consulta de privilegios: `anon` y `authenticated` sin `select` ni `insert` en `lista_espera` y `pagos`; panel Advisors → Security solo con avisos informativos "RLS sin políticas".
+
+
 
 | Control | Dónde |
 |---|---|
@@ -11,10 +39,12 @@ Auditoría del 17/10/2026 y estado de cada hallazgo. Para el contexto del negoci
 | Datos en Supabase con RLS activado y sin políticas (solo la clave secreta del servidor entra) | `supabase/migrations/`, `lib/supabase.ts` |
 | `/api/checkout`: mismo origen, límite por IP, Turnstile, referencia idempotente | `app/api/checkout/route.ts` |
 | Webhook: firma HMAC con caducidad de 10 min, monto verificado contra la cotización, pago guardado por `payment_id`, sin datos personales en logs | `app/api/webhooks/mercadopago/route.ts`, `lib/pagos.ts` |
-| Respaldo Apps Script: clave compartida y neutralización de fórmulas | `apps-script/lista-espera.gs` |
+| Respaldo Apps Script (por retirar): clave compartida y neutralización de fórmulas | `apps-script/lista-espera.gs` |
 | CI (tipos, pruebas, `npm audit`, build, gitleaks) y Dependabot | `.github/` |
 
 ## Puesta en marcha (lo que no se puede hacer desde el código)
+
+Los pasos de Supabase (1), Turnstile (2) y la regla del WAF (3) ya están hechos. Quedan los de cuentas y accesos (4).
 
 ### 1. Supabase (proyecto `silver-job`, región São Paulo)
 1. Restaurar el proyecto si sigue pausado (Dashboard → Restore project).

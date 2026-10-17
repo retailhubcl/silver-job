@@ -14,7 +14,7 @@ Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Los **pr
 | Hosting | Vercel (también responde en silverjob.vercel.app) |
 | Repositorio | github.com/retailhubcl/silver-job (despliegue automático a Vercel al hacer push a main) |
 | Stack | Next.js 16 (App Router, TypeScript), framework "Next.js" en el proyecto `silverjob` de Vercel |
-| Formulario | POST a `/api/lista` → Supabase (tabla `lista_espera`, RLS sin políticas). Respaldo temporal: Apps Script → planilla, mientras Supabase no esté configurado |
+| Formulario | POST a `/api/lista` → Supabase (tabla `lista_espera`, RLS sin políticas), protegido por Turnstile, límite por IP en el código y regla de límite en el WAF de Vercel. Verificado en producción el 17/10/2026. El respaldo por Apps Script sigue en el código y está por retirarse (sección 6) |
 | Analítica | Vercel Web Analytics con `@vercel/analytics` (`<Analytics />` en `app/layout.tsx`) |
 | Pagos | Mercado Pago Checkout Pro (`/pagar`, `/api/checkout`, webhook `/api/webhooks/mercadopago`) |
 | Contacto público | tomas@silverjob.cl |
@@ -53,10 +53,9 @@ Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `np
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `NEXT_PUBLIC_LISTA_ENDPOINT` | Obsoleta: el navegador ya no habla con el Apps Script. Usar `LISTA_ENDPOINT` (solo servidor) mientras dure el respaldo, y borrarla al migrar |
-| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Pendiente (Sensitive). Proyecto `silver-job` (São Paulo), que estaba pausado al 17/10/2026. Producción y Preview con bases distintas |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Pendiente. Captcha de Cloudflare; sin ellas queda desactivado |
-| `LISTA_TOKEN` | Opcional: clave compartida con la propiedad `CLAVE` del Apps Script (respaldo) |
+| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Cargadas en Production el 17/10/2026 (Sensitive) y verificadas con inscripciones reales. Proyecto `silver-job` (ref `zamuogqipivtqssfyswq`, São Paulo). **Preview no las tiene**: aún no existe una base de pruebas, y Preview nunca debe apuntar a la real |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cargadas en Production el 17/10/2026. Verificado: el widget termina en éxito y el servidor rechaza con `captcha` (400) los envíos sin token o con token falso. Sin ellas el captcha queda desactivado |
+| `NEXT_PUBLIC_LISTA_ENDPOINT` | **Obsoleta, por borrar** de Production y Preview (y `LISTA_ENDPOINT` / `LISTA_TOKEN` si existen). Ver pendiente de Apps Script en la sección 6 |
 
 ---
 
@@ -81,8 +80,8 @@ Campos enviados (URLSearchParams): `tipo` (pyme/ejecutivo), `nombre`, `correo`, 
 
 - Opciones de `horas`: "Hasta 10 (Básico)", "Entre 11 y 26 (Estándar)", "Entre 27 y 40 (Intensivo)", "Aún no lo sé".
 - LinkedIn es `type="text"`; el JS agrega `https://` si falta y exige que contenga `linkedin.com/in/`.
-- El envío **no** usa `mode: "no-cors"`: lee la respuesta y solo confirma si la planilla devuelve `{"result":"success"}`. Si no, muestra error con el correo de contacto.
-- El Apps Script (`apps-script/lista-espera.gs`) devuelve JSON con ContentService, agrega las columnas faltantes por nombre y descarta envíos con el campo trampa lleno.
+- El envío va a `/api/lista` (mismo origen), que valida de nuevo en el servidor y guarda en Supabase. El navegador lee la respuesta y solo confirma si llega `{"result":"success"}`; si no, muestra error con el correo de contacto. Las inscripciones repetidas con el mismo tipo y correo actualizan la fila (no duplican).
+- `apps-script/lista-espera.gs` es el respaldo anterior (planilla de Google): hoy no se usa mientras Supabase esté configurado y se retirará (sección 6).
 
 ### Analítica
 
@@ -224,16 +223,45 @@ El resultado de Estándar coincide con la v1 (cobro neto $1.545.882 con el mix 3
 ## 6. Pendientes
 
 **Para dejar operativa la versión publicada (Next.js, ya en producción):**
-1. ~~Publicar el Apps Script~~ Hecho el 1/10/2026: `apps-script/lista-espera.gs` publicado en el proyecto vinculado a la planilla; el sitio usa su URL (`NEXT_PUBLIC_LISTA_ENDPOINT`).
+1. ~~Publicar el Apps Script~~ Hecho el 1/10/2026; reemplazado por Supabase el 17/10/2026 (ver pendiente de retiro abajo).
 2. ~~Activar Web Analytics~~ Hecho el 1/10/2026 (visitas; los eventos requieren plan Pro).
-3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
+3. **Mercado Pago** (pendiente, es lo que falta para el primer ingreso): crear la aplicación con credenciales `TEST-`, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar `MERCADOPAGO_ACCESS_TOKEN` y `MERCADOPAGO_WEBHOOK_SECRET` en Vercel (Sensitive). Luego hacer una compra de prueba y verificar que el pago llegue a la tabla `pagos` con `monto_coincide = true`. Probar también el captcha y el límite del WAF en `/pagar` y `/api/checkout` (la regla incluye ambas rutas, pero solo se probó `/api/lista`). Usar credenciales `APP_USR-` solo en Production.
 4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
-5. ~~Guardar los pagos~~ Hecho en código el 17/10/2026 (tabla `pagos`, monto verificado); falta aplicar la migración y cargar las claves de Supabase. Ver `docs/seguridad.md`.
-6. **Seguridad (auditoría del 17/10/2026):** código endurecido (cabeceras, CSRF, límites, validación de servidor, Turnstile, webhook con caducidad, CI). Falta lo que no es código: restaurar Supabase y aplicar la migración, claves en Vercel, regla de límite en el WAF, 2FA y accesos de la planilla, SPF/DKIM/DMARC, revisión legal. Detalle y plan de incidentes en `docs/seguridad.md`.
+5. Tras aprobarse un pago: falta el aviso por correo al equipo y la activación del servicio (hoy solo se guarda en `pagos`; activar únicamente con `estado = approved` y `monto_coincide` distinto de `false`).
+
+### Seguridad (auditoría del 17/10/2026)
+
+Detalle de controles, cómo se verificó cada uno y el plan de incidentes en `docs/seguridad.md`.
+
+**Hecho y verificado en producción el 17/10/2026:**
+- Cabeceras de seguridad (CSP, HSTS, anti-iframe, Referrer/Permissions-Policy, sin `X-Powered-By`); la CSP no genera errores propios en `/`, `/pagar` ni `/privacidad`.
+- Formulario por `/api/lista`: mismo origen (403 sin `Origin` o con origen ajeno), validación completa en el servidor, campo trampa, límite de 5 envíos por IP cada 10 minutos en el código.
+- Regla de límite del WAF de Vercel: 10 solicitudes por minuto por IP en `/api/lista` y `/api/checkout`. Probada con ráfaga desde el navegador: de la 11 en adelante responde 429 con `x-vercel-mitigated: deny`.
+- Turnstile activo (widget con éxito; sin token o con token falso, 400 `captcha`).
+- Supabase: tablas `lista_espera` y `pagos` con RLS activado y forzado, sin políticas (`anon` y `authenticated` sin acceso); purga mensual de la lista de espera a los 12 meses con `pg_cron` (día 1, 04:00 UTC).
+- Webhook con firma que caduca a los 10 minutos, monto verificado contra la cotización y pago guardado por `payment_id`; sin datos personales en logs.
+- Política de privacidad actualizada (encargados, transferencia fuera de Chile, retención, derechos).
+- CI (tipos, pruebas, `npm audit`, build, gitleaks) y Dependabot.
+
+**Pendiente, en orden:**
+1. **Retirar el Apps Script y el respaldo** (guía de 5 pasos: revisar Ejecuciones del script, archivar la implementación, quitar permisos de Google y mover la planilla a la papelera, borrar `NEXT_PUBLIC_LISTA_ENDPOINT` en Vercel y redesplegar). Después, un PR que quite de `app/api/lista/route.ts` la rama del Apps Script y la URL escrita en el código, borre `apps-script/lista-espera.gs` y actualice `.env.example` y los docs. Hacer el PR solo después de retirar el script, para no perder inscripciones si Supabase fallara.
+2. **Borrar las filas de prueba** de `lista_espera` desde el panel de Supabase (hoy queda la de `tomas.saba+prueba1@gmail.com`). Los `DELETE` por la herramienta de Claude quedan esperando confirmación y no se ejecutan.
+3. **Cuentas y accesos:** 2FA con app o llave en Google, GitHub, Vercel, Cloudflare, NIC Chile, Supabase y Mercado Pago; proteger `main` en GitHub (PR obligatorio y checks `verificar` y `secretos` requeridos, secret scanning y push protection); SPF, DKIM y DMARC (`p=quarantine`, luego `reject`) para `silverjob.cl`; registro CAA, DNSSEC y bloqueo de transferencia en NIC Chile; una segunda persona de confianza con acceso de recuperación al dominio, Vercel, Supabase y Google.
+4. **Previews:** crear una base de pruebas en Supabase para Preview, usar credenciales `TEST-` de Mercado Pago allí y activar Deployment Protection.
+5. **Revisión legal** de la política de privacidad y de los términos antes del **1/12/2026** (entrada en vigor de la Ley 21.719): bases legales, plazo de aviso de brechas a la Agencia, retención, transferencia internacional.
+6. **Tabla `publicaciones`** en el proyecto Supabase `silver-job`: es de otro uso (programación de redes sociales), está vacía y protegida por RLS, pero tiene permisos abiertos a `anon`. Revocarlos, o moverla a otro proyecto.
+7. **Probar el reinicio del widget de Turnstile tras un envío con error:** el token sirve una sola vez, y hoy el componente no reinicia el widget. Si un segundo envío falla con `captcha`, arreglarlo en `components/Captcha.tsx`.
+8. **CSP con nonces** (hoy mantiene `'unsafe-inline'` en scripts, necesario para Next sin nonces): mejora a mediano plazo con `proxy.ts`, a costa de renderizado dinámico.
+9. Cuando exista la plataforma (agenda, evaluaciones, liquidaciones): autenticación, RLS por usuario, registro de auditoría y cifrado de datos bancarios.
+
+**Notas operativas para trabajar con Claude en este proyecto:**
+- El entorno de Claude solo llega a los dominios que se habilitan en *Network access*; `silverjob.cl` ya está habilitado. Las pruebas de límite de envíos hechas desde ese entorno no sirven (el proxy rota las IP); probar en el navegador con la consola (script en `docs/seguridad.md`).
+- El conector de Vercel de Claude no tiene acceso al proyecto `silverjob` (responde 404): las variables, el firewall y los despliegues se manejan a mano en el panel. Para automatizarlo, hay que autorizar ese proyecto en el conector.
+- Claude no crea claves ni lee secretos: la clave secreta de Supabase y las de Turnstile y Mercado Pago las carga Tomás directo en Vercel.
 
 **Negocio:**
 - Validar con el contador el tratamiento del IVA: si el ejecutivo emite boleta de honorarios y Silver Job cobra por mandato, el IVA podría aplicar solo al margen.
-- Revisión legal de los términos y de la política de privacidad.
+- Revisión legal de los términos y de la política de privacidad (ver Seguridad, punto 5).
 
 **Mejoras de UX:** ver la sección 7.
 
