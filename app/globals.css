@@ -201,6 +201,7 @@ h1, h2, h3, h4, .cierre { font-family: var(--fuente-titulos); font-optical-sizin
 .consentimiento + .campo-error { margin-top: .5rem; }
 .form-pie { margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .form-pie small { color: var(--grafito-2); font-size: 1rem; }
+.captcha { margin: 12px 0; min-height: 65px; }
 .trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .form-error { margin: 1.25rem 0 0; color: var(--vino); font-weight: 600; font-size: 1rem; }
 .boton:disabled { opacity: .6; cursor: wait; }

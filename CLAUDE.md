@@ -14,7 +14,7 @@ Idioma de todo el proyecto: **español de Chile (es-CL)**. Moneda: CLP. Los **pr
 | Hosting | Vercel (también responde en silverjob.vercel.app) |
 | Repositorio | github.com/retailhubcl/silver-job (despliegue automático a Vercel al hacer push a main) |
 | Stack | Next.js 16 (App Router, TypeScript), framework "Next.js" en el proyecto `silverjob` de Vercel |
-| Formulario | POST a Google Apps Script → planilla de Google |
+| Formulario | POST a `/api/lista` → Supabase (tabla `lista_espera`, RLS sin políticas). Respaldo temporal: Apps Script → planilla, mientras Supabase no esté configurado |
 | Analítica | Vercel Web Analytics con `@vercel/analytics` (`<Analytics />` en `app/layout.tsx`) |
 | Pagos | Mercado Pago Checkout Pro (`/pagar`, `/api/checkout`, webhook `/api/webhooks/mercadopago`) |
 | Contacto público | tomas@silverjob.cl |
@@ -35,7 +35,9 @@ app/
   api/checkout/route.ts       Crea la preferencia de Checkout Pro y redirige
   api/webhooks/mercadopago/route.ts   Valida x-signature y consulta el pago
 components/                   CalendarioPatricia, Cotizador, Encabezado, EnlaceRegistro, FormularioLista, GuiaPlan, Pie, Simbolo
-lib/                          precios (única fuente de precios), validacion (formulario de la lista), mercadopago (API), firma (webhook), eventos
+lib/                          precios (única fuente de precios), validacion (formulario de la lista, cliente y servidor), mercadopago (API), firma (webhook), pagos, supabase, sanitizar, limite, origen, turnstile, eventos
+supabase/migrations/          Tablas lista_espera y pagos con RLS
+docs/seguridad.md             Controles, puesta en marcha y plan de incidentes
 app/fuentes/                  Source Sans 3 y Source Serif 4 (woff2, subconjunto latino) con sus licencias
 app/robots.ts, sitemap.ts     robots.txt y sitemap.xml; íconos en app/icon.svg, apple-icon.png y favicon.ico
 public/img/                   og.jpg, ejecutivo.jpg, patricia-*.jpg (se sirven con next/image)
@@ -51,7 +53,10 @@ Comandos: `npm run dev`, `npm test` (precios, checkout y firma del webhook), `np
 | `NEXT_PUBLIC_SITE_URL` | Cargada en Production: `https://silverjob.cl` |
 | `MERCADOPAGO_ACCESS_TOKEN` | Pendiente (Sensitive) |
 | `MERCADOPAGO_WEBHOOK_SECRET` | Pendiente (Sensitive) |
-| `NEXT_PUBLIC_LISTA_ENDPOINT` | Cargada en Production y Preview con el endpoint de abajo (proyecto de Apps Script vinculado a la planilla "Registros Silver Job"). Al cambiarla hay que volver a desplegar |
+| `NEXT_PUBLIC_LISTA_ENDPOINT` | Obsoleta: el navegador ya no habla con el Apps Script. Usar `LISTA_ENDPOINT` (solo servidor) mientras dure el respaldo, y borrarla al migrar |
+| `SUPABASE_URL`, `SUPABASE_SECRET_KEY` | Pendiente (Sensitive). Proyecto `silver-job` (São Paulo), que estaba pausado al 17/10/2026. Producción y Preview con bases distintas |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Pendiente. Captcha de Cloudflare; sin ellas queda desactivado |
+| `LISTA_TOKEN` | Opcional: clave compartida con la propiedad `CLAVE` del Apps Script (respaldo) |
 
 ---
 
@@ -223,7 +228,8 @@ El resultado de Estándar coincide con la v1 (cobro neto $1.545.882 con el mix 3
 2. ~~Activar Web Analytics~~ Hecho el 1/10/2026 (visitas; los eventos requieren plan Pro).
 3. Mercado Pago: crear la aplicación, configurar el webhook (`https://silverjob.cl/api/webhooks/mercadopago`, evento Pagos) y cargar las credenciales en Vercel.
 4. `/pagar` informa la regla del día 5, pero no bloquea el pago fuera de plazo.
-5. Guardar los pagos confirmados en una base de datos (hoy quedan en los logs de Vercel y en el panel de Mercado Pago).
+5. ~~Guardar los pagos~~ Hecho en código el 17/10/2026 (tabla `pagos`, monto verificado); falta aplicar la migración y cargar las claves de Supabase. Ver `docs/seguridad.md`.
+6. **Seguridad (auditoría del 17/10/2026):** código endurecido (cabeceras, CSRF, límites, validación de servidor, Turnstile, webhook con caducidad, CI). Falta lo que no es código: restaurar Supabase y aplicar la migración, claves en Vercel, regla de límite en el WAF, 2FA y accesos de la planilla, SPF/DKIM/DMARC, revisión legal. Detalle y plan de incidentes en `docs/seguridad.md`.
 
 **Negocio:**
 - Validar con el contador el tratamiento del IVA: si el ejecutivo emite boleta de honorarios y Silver Job cobra por mandato, el IVA podría aplicar solo al margen.

@@ -17,6 +17,7 @@ const ERRORES: Record<string, string> = {
   plan: "Revisa la gerencia, las horas o los bloques que elegiste.",
   datos: "Revisa tu nombre, empresa y correo.",
   terminos: "Para pagar tienes que aceptar los términos y condiciones.",
+  captcha: "No pudimos verificar que eres una persona. Inténtalo de nuevo.",
   mercadopago: "No pudimos iniciar el pago con Mercado Pago. Inténtalo de nuevo en unos minutos o escríbenos a tomas@silverjob.cl.",
 };
 
@@ -48,7 +49,7 @@ export default async function Pagar({ searchParams }: { searchParams: Promise<{ 
             <p className="pago-nota">
               {bloques ? <a href="/pagar">¿Quieres contratar un plan?</a> : <a href="/pagar?tipo=bloque">¿Ya tienes un plan y necesitas más horas?</a>}
             </p>
-            {error && ERRORES[error] && <p className="form-error" role="alert">{ERRORES[error]}</p>}
+            {error && Object.hasOwn(ERRORES, error) && <p className="form-error" role="alert">{ERRORES[error]}</p>}
             {bloques ? <CotizadorBloques /> : <CotizadorPlan horasIniciales={horasIniciales} gerenciaInicial={gerenciaInicial} modalidadInicial={modalidadInicial} />}
             <p className="pago-nota">Te llevaremos al sitio seguro de Mercado Pago. Silver Job no ve ni guarda los datos de tu tarjeta.</p>
           </>

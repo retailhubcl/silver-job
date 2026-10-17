@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { firmaValida } from "@/lib/firma";
 import { obtenerPago } from "@/lib/mercadopago";
+import { registrarPago } from "@/lib/pagos";
 
 // Notificaciones de Mercado Pago. Se valida la firma y se consulta el pago en la API,
 // sin confiar en el contenido del aviso.
@@ -21,6 +22,7 @@ export async function POST(request: Request) {
     requestId: request.headers.get("x-request-id"),
     dataId,
     secreto,
+    toleranciaMs: 10 * 60_000, // rechaza avisos repetidos o con firma antigua
   });
   if (!valida) return NextResponse.json({ error: "firma inválida" }, { status: 401 });
 
@@ -28,16 +30,18 @@ export async function POST(request: Request) {
 
   try {
     const pago = await obtenerPago(dataId);
+    // Sin datos personales en los logs: el correo y la empresa quedan solo en la base de datos
+    const { coincide } = await registrarPago(pago);
     console.info("pago_mp", {
       id: pago.id,
       estado: pago.status,
       detalle: pago.status_detail,
       monto: pago.transaction_amount,
       referencia: pago.external_reference,
-      correo: pago.payer?.email,
-      metadata: pago.metadata,
+      montoCoincide: coincide,
     });
-    // Siguiente paso: guardar el pago (Supabase) y avisar por correo al equipo.
+    // Siguiente paso: avisar por correo al equipo y activar el servicio solo si
+    // estado === "approved" y montoCoincide !== false.
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("webhook_mp_error", e);
